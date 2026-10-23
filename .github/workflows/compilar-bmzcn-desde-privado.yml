@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   instalador:
@@ -242,3 +243,27 @@ jobs:
           gh release create $tag @archivos --repo kusne/Control-Interno --title "BMZCN Desktop $env:BMZCN_BUILD_VERSION" --notes "Instalador generado por GitHub Actions en Control-Interno a partir de un checkout privado y de solo lectura de kusne/BMZCN. El codigo fuente y su historial no se publicaron." --latest
           if ($LASTEXITCODE -ne 0) { throw "No se publico el release en Control-Interno." }
           Write-Host "Release creado: $tag"
+
+      - name: Notificar automaticamente version a BMZCN Desktop por Realtime
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:ACTIONS_ID_TOKEN_REQUEST_URL -or -not $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
+            throw "La ejecucion publica no tiene permiso OIDC para notificar."
+          }
+          $separador = if ($env:ACTIONS_ID_TOKEN_REQUEST_URL.Contains('?')) { '&' } else { '?' }
+          $oidcUrl = $env:ACTIONS_ID_TOKEN_REQUEST_URL + $separador + 'audience=bmzcn-desktop-release'
+          $token = Invoke-RestMethod -Method Get -Uri $oidcUrl -Headers @{
+            Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+          } -TimeoutSec 20
+          if (-not $token.value) { throw "GitHub no emitio un token de identidad OIDC." }
+          $url = "https://hbnxvwrqxhurdteirsyl.supabase.co/functions/v1/bmzcn-versiones-publicar"
+          $body = @{ version = $env:BMZCN_BUILD_VERSION } | ConvertTo-Json -Compress
+          $respuesta = Invoke-RestMethod -Method Post -Uri $url -Headers @{
+            Authorization = "Bearer $($token.value)"
+          } -Body $body -ContentType 'application/json' -TimeoutSec 30
+          if ($respuesta.ok -ne $true -or $respuesta.version -ne $env:BMZCN_BUILD_VERSION) {
+            throw "El publicador de Supabase no confirmo el instalador."
+          }
+          Write-Host "Version $env:BMZCN_BUILD_VERSION publicada y anunciada a BMZCN Desktop."
