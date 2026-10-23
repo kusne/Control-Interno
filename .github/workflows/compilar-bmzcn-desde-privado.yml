@@ -55,7 +55,7 @@ jobs:
           $nuevaVersion = '1.0.' + ($versionActual + 1)
           "BMZCN_BUILD_VERSION=$nuevaVersion" >> $env:GITHUB_ENV
           $env:BMZCN_BUILD_VERSION = $nuevaVersion
-          node -e "const fs=require('fs');const p=require('./package.json');p.version=process.env.BMZCN_BUILD_VERSION;p.build.buildVersion=p.version;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');"
+          node -e "const fs=require('fs');const p=require('./package.json');p.version=process.env.BMZCN_BUILD_VERSION;p.build.buildVersion=p.version;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
           if ($LASTEXITCODE -ne 0) { throw "No se pudo asignar version." }
           Write-Host "Version nueva: $nuevaVersion"
 
