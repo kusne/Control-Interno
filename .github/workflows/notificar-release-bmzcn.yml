@@ -1,0 +1,52 @@
+name: Notificar version BMZCN por Supabase Realtime
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/notificar-release-bmzcn.yml'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: bmzcn-notificacion-ultima-version
+  cancel-in-progress: false
+
+jobs:
+  anunciar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Anunciar ultimo instalador publicado con identidad firmada
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = (gh release view --repo kusne/Control-Interno --json tagName --jq .tagName).Trim()
+          if ($LASTEXITCODE -ne 0 -or $tag -notmatch '^v(1\.0\.\d+)$') {
+            throw 'No existe release BMZCN estable para anunciar.'
+          }
+          $version = $Matches[1]
+          if (-not $env:ACTIONS_ID_TOKEN_REQUEST_URL -or -not $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
+            throw 'Falta permiso OIDC de GitHub Actions.'
+          }
+          $separador = if ($env:ACTIONS_ID_TOKEN_REQUEST_URL.Contains('?')) { '&' } else { '?' }
+          $solicitudOidc = $env:ACTIONS_ID_TOKEN_REQUEST_URL + $separador + 'audience=bmzcn-desktop-release'
+          $oidc = Invoke-RestMethod -Method Get -Uri $solicitudOidc -Headers @{
+            Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+          } -TimeoutSec 20
+          if (-not $oidc.value) { throw 'GitHub no entrego el token OIDC firmado.' }
+          $api = 'https://hbnxvwrqxhurdteirsyl.supabase.co/functions/v1/bmzcn-versiones-publicar'
+          $body = @{ version = $version } | ConvertTo-Json -Compress
+          $r = Invoke-RestMethod -Method Post -Uri $api -Headers @{
+            Authorization = "Bearer $($oidc.value)"
+          } -Body $body -ContentType 'application/json' -TimeoutSec 30
+          if ($r.ok -ne $true -or $r.version -ne $version) {
+            throw 'Supabase no confirmo el aviso del release verificado.'
+          }
+          Write-Host "Supabase Realtime: version $version confirmada."
