@@ -78,6 +78,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Recursos API no supera sintaxis." }
           Write-Host "Sintaxis y secretos de cliente verificados."
 
+      - name: Auditar codigo actual sin imprimir valores de secretos
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          node scripts/auditar-secretos.cjs
+          if ($LASTEXITCODE -ne 0) {
+            throw "No se puede publicar el instalador: la auditoria encontro posibles secretos embebidos."
+          }
+
       - name: Ejecutar pruebas sin publicar datos operativos en logs
         shell: pwsh
         working-directory: bmzcn
