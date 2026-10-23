@@ -82,6 +82,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Informes Gestion no supera sintaxis." }
           node --check app/recursos/recursos-api.js
           if ($LASTEXITCODE -ne 0) { throw "Recursos API no supera sintaxis." }
+          node --check app/stats/Frontend/Acumulados/iconos-clasificacion-operativos.js
+          if ($LASTEXITCODE -ne 0) { throw "Iconos de clasificación no superan sintaxis." }
           Write-Host "Sintaxis y secretos de cliente verificados."
 
       - name: Auditar codigo actual sin imprimir valores de secretos
