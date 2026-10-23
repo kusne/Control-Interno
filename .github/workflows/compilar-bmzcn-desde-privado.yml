@@ -1,4 +1,5 @@
 name: Compilar BMZCN privado con runner publico
+# Build solicitado para assets institucionales: patrullaje y cinemometro 250 km/h.
 on:
   workflow_dispatch:
   push:
