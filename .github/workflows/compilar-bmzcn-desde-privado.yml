@@ -196,7 +196,20 @@ jobs:
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-excel-privado.log'
           try {
             & $exe.FullName -e "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');" *> $log
-            if ($LASTEXITCODE -ne 0) { throw "El exportador XLSX empaquetado no supera las pruebas." }
+            if ($LASTEXITCODE -ne 0) {
+              $codigo = $LASTEXITCODE
+              $salida = Get-Content $log -Raw -ErrorAction SilentlyContinue
+              $categoria = 'Fallo de arranque o no clasificado'
+              if ($salida -match 'MODULE_NOT_FOUND|Cannot find module') { $categoria = 'Dependencia empaquetada faltante' }
+              elseif ($salida -match 'ERR_REQUIRE_ESM') { $categoria = 'Importacion ESM incompatible' }
+              elseif ($salida -match 'ERR_INVALID_ARG_TYPE') { $categoria = 'Argumento invalido' }
+              elseif ($salida -match 'SyntaxError') { $categoria = 'Error de sintaxis' }
+              elseif ($salida -match 'TypeError') { $categoria = 'Error de tipo' }
+              elseif ($salida -match 'ReferenceError') { $categoria = 'Referencia no definida' }
+              elseif ($salida -match 'XLSX invalido') { $categoria = 'Salida no es XLSX' }
+              Write-Host "Diagnostico sintetico de prueba empaquetada: categoria=$categoria; exit_code=$codigo"
+              throw "El exportador XLSX empaquetado no supera las pruebas."
+            }
           } finally {
             Remove-Item $log -Force -ErrorAction SilentlyContinue
             Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
