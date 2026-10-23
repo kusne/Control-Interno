@@ -189,33 +189,43 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         run: |
+          $ErrorActionPreference = 'Stop'
           $exe = Get-ChildItem 'dist/win-unpacked' -Filter '*.exe' -File | Select-Object -First 1
           if (-not $exe) { throw "No existe ejecutable desempaquetado para verificar Excel." }
-          $env:ELECTRON_RUN_AS_NODE = '1'
-          $env:BMZCN_APP_ASAR = (Resolve-Path 'dist/win-unpacked/resources/app.asar').Path
-          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-excel-privado.log'
+          $asar = (Resolve-Path 'dist/win-unpacked/resources/app.asar').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new($exe.FullName)
+          $psi.UseShellExecute = $false
+          $psi.CreateNoWindow = $true
+          $psi.RedirectStandardOutput = $true
+          $psi.RedirectStandardError = $true
+          $psi.Environment['ELECTRON_RUN_AS_NODE'] = '1'
+          $psi.Environment['BMZCN_APP_ASAR'] = $asar
+          $codigo = "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');"
+          [void]$psi.ArgumentList.Add('-e')
+          [void]$psi.ArgumentList.Add($codigo)
+          $proceso = [System.Diagnostics.Process]::Start($psi)
+          if (-not $proceso) { throw "No se pudo iniciar Electron en modo de pruebas." }
           try {
-            & $exe.FullName -e "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');" *> $log
-            if ($LASTEXITCODE -ne 0) {
-              $codigo = $LASTEXITCODE
-              $salida = Get-Content $log -Raw -ErrorAction SilentlyContinue
-              $categoria = 'Fallo de arranque o no clasificado'
-              if ($salida -match 'MODULE_NOT_FOUND|Cannot find module') { $categoria = 'Dependencia empaquetada faltante' }
-              elseif ($salida -match 'ERR_REQUIRE_ESM') { $categoria = 'Importacion ESM incompatible' }
-              elseif ($salida -match 'ERR_INVALID_ARG_TYPE') { $categoria = 'Argumento invalido' }
-              elseif ($salida -match 'SyntaxError') { $categoria = 'Error de sintaxis' }
-              elseif ($salida -match 'TypeError') { $categoria = 'Error de tipo' }
-              elseif ($salida -match 'ReferenceError') { $categoria = 'Referencia no definida' }
-              elseif ($salida -match 'XLSX invalido') { $categoria = 'Salida no es XLSX' }
-              Write-Host "Diagnostico sintetico de prueba empaquetada: categoria=$categoria; exit_code=$codigo"
-              throw "El exportador XLSX empaquetado no supera las pruebas."
+            if (-not $proceso.WaitForExit(45000)) {
+              try { $proceso.Kill($true) } catch {}
+              throw "El proceso de validacion Excel no termino en el limite de seguridad."
+            }
+            $salida = $proceso.StandardOutput.ReadToEnd()
+            $errores = $proceso.StandardError.ReadToEnd()
+            if ($proceso.ExitCode -ne 0) {
+              $categoria = 'Error no clasificado'
+              if ($errores -match 'MODULE_NOT_FOUND|Cannot find module') { $categoria = 'Modulo empaquetado faltante' }
+              elseif ($errores -match 'SyntaxError') { $categoria = 'Error de sintaxis' }
+              elseif ($errores -match 'TypeError') { $categoria = 'Error de tipo' }
+              elseif ($errores -match 'ReferenceError') { $categoria = 'Referencia no definida' }
+              elseif ($errores -match 'XLSX invalido') { $categoria = 'Archivo no valido' }
+              Write-Host "Comprobacion Excel: categoria=$categoria; exit_code=$($proceso.ExitCode)"
+              throw "No se puede publicar: el exportador Excel no funciono dentro del ejecutable empaquetado."
             }
           } finally {
-            Remove-Item $log -Force -ErrorAction SilentlyContinue
-            Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
-            Remove-Item Env:BMZCN_APP_ASAR -ErrorAction SilentlyContinue
+            $proceso.Dispose()
           }
-          Write-Host "Exportacion Excel empaquetada comprobada."
+          Write-Host "El ejecutable empaquetado genera un XLSX correcto y sale con codigo 0."
 
       - name: Publicar solo el instalador en Control-Interno
         shell: pwsh
