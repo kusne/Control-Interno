@@ -1,0 +1,21 @@
+name: Diagnóstico temporal ejecutores públicos
+on:
+  push:
+    branches:
+      - diagnostico-actions-20261023
+    paths:
+      - .github/workflows/diagnostico-publico.yml
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirmar ejecución Linux
+        run: echo "LINUX_PUBLICO_FUNCIONA"
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Confirmar ejecución Windows
+        shell: pwsh
+        run: Write-Output "WINDOWS_PUBLICO_FUNCIONA"
