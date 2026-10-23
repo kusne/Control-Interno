@@ -108,7 +108,20 @@ jobs:
             'tests/stats-procedimiento-evento-20261017.test.cjs',
             'tests/stats-procedimiento-autovinculo-20261017.test.cjs',
             'tests/pestanas-carga-sin-parpadeo.test.cjs',
-            'tests/actualizaciones-realtime.test.cjs'
+            'tests/actualizaciones-realtime.test.cjs',
+            'tests/asistente-personal-colectivo.test.cjs',
+            'tests/filtro-editor-horarios-word.test.cjs',
+            'tests/filtro-guardia-epe-aprad-20261017.test.cjs',
+            'tests/filtro-recuperacion.test.cjs',
+            'tests/filtro-supervisor-arranque-lento.test.mjs',
+            'tests/stats-presencias-aprad-puente-word-cero-20261017.test.cjs',
+            'tests/stats-aprad-y-sin-efecto-guardia-20261017.test.cjs',
+            'tests/stats-runtime-presencias-cargadas-20261017.test.cjs',
+            'tests/stats-clasificacion-aprad-nocturnidad.test.cjs',
+            'tests/iconos-clasificacion-operativos.test.cjs',
+            'tests/stats-ingreso-semanal-pegado-guardia-pasada.test.cjs',
+            'tests/stats-retorno-pestana-sin-parpadeo.test.cjs',
+            'tests/chat-natural-saludos.test.cjs'
           )
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
           node --test @pruebas *> $log
@@ -159,6 +172,25 @@ jobs:
           Remove-Item $env:RUNNER_TEMP\bmzcn-smoke-privado.log -Force -ErrorAction SilentlyContinue
           if ($resultado -ne 0) { throw "Prueba del instalador Filtro Ordenes fallida." }
           Write-Host "Instalador y actualizacion interna verificados."
+
+      - name: Verificar exportacion Excel dentro del paquete Electron
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $exe = Get-ChildItem 'dist/win-unpacked' -Filter '*.exe' -File | Select-Object -First 1
+          if (-not $exe) { throw "No existe ejecutable desempaquetado para verificar Excel." }
+          $env:ELECTRON_RUN_AS_NODE = '1'
+          $env:BMZCN_APP_ASAR = (Resolve-Path 'dist/win-unpacked/resources/app.asar').Path
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-excel-privado.log'
+          try {
+            & $exe.FullName -e "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');" *> $log
+            if ($LASTEXITCODE -ne 0) { throw "El exportador XLSX empaquetado no supera las pruebas." }
+          } finally {
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
+            Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+            Remove-Item Env:BMZCN_APP_ASAR -ErrorAction SilentlyContinue
+          }
+          Write-Host "Exportacion Excel empaquetada comprobada."
 
       - name: Publicar solo el instalador en Control-Interno
         shell: pwsh
