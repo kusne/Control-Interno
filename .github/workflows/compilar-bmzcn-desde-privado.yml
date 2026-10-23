@@ -1,0 +1,168 @@
+name: Compilar BMZCN privado con runner publico
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: bmzcn-instalador-publico-seguro
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  instalador:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Verificar credencial de lectura
+        shell: pwsh
+        env:
+          SOURCE_TOKEN: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+        run: |
+          if (-not $env:SOURCE_TOKEN) {
+            throw "Falta configurar el secreto BMZCN_SOURCE_READ_TOKEN en Control-Interno. Debe ser un fine-grained PAT de solo lectura (Contents: Read) para kusne/BMZCN."
+          }
+          Write-Host "Existe una credencial configurada para consultar el origen privado. No se mostrara su valor."
+
+      - name: Descargar BMZCN privado sin publicar su historial
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          ref: main
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Calcular nueva version desde la ultima publicacion
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $latest = (gh release view --repo kusne/Control-Interno --json tagName --jq .tagName).Trim()
+          if ($LASTEXITCODE -ne 0 -or $latest -notmatch '^v1\.0\.(\d+)$') {
+            throw "No se pudo verificar el ultimo release v1.0.X de Control-Interno. No publicar para evitar version incorrecta."
+          }
+          $versionActual = [int]$Matches[1]
+          $nuevaVersion = '1.0.' + ($versionActual + 1)
+          "BMZCN_BUILD_VERSION=$nuevaVersion" >> $env:GITHUB_ENV
+          $env:BMZCN_BUILD_VERSION = $nuevaVersion
+          node -e "const fs=require('fs');const p=require('./package.json');p.version=process.env.BMZCN_BUILD_VERSION;p.build.buildVersion=p.version;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');"
+          if ($LASTEXITCODE -ne 0) { throw "No se pudo asignar version." }
+          Write-Host "Version nueva: $nuevaVersion"
+
+      - name: Comprobar el origen y ausencia de tokens embebidos en STATS
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $config = Get-Content "app/stats/Arranque/configuracion/api-stats.js" -Raw
+          if ($config -match "clientToken:\s*'[^']{16,}'") {
+            throw "Publicacion bloqueada: token privado incrustado en Stats."
+          }
+          node --check main.js
+          if ($LASTEXITCODE -ne 0) { throw "Electron main.js no supera verificacion de sintaxis." }
+          node --check preload.js
+          if ($LASTEXITCODE -ne 0) { throw "Electron preload.js no supera verificacion de sintaxis." }
+          node --check app/informes/gestion.js
+          if ($LASTEXITCODE -ne 0) { throw "Informes Gestion no supera sintaxis." }
+          node --check app/recursos/recursos-api.js
+          if ($LASTEXITCODE -ne 0) { throw "Recursos API no supera sintaxis." }
+          Write-Host "Sintaxis y secretos de cliente verificados."
+
+      - name: Ejecutar pruebas sin publicar datos operativos en logs
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $pruebas = @(
+            'tests/seguridad-autenticacion-supabase-v2.test.cjs',
+            'tests/informes-gestion-elevaciones.test.cjs',
+            'tests/informes-importador-docx-realtime.test.cjs',
+            'tests/informes-guardia-vigente.test.cjs',
+            'tests/informes-elevaciones-reiteradas.test.cjs',
+            'tests/asistente-integracion-v2.test.cjs',
+            'tests/asistente-orquestador-v3.test.cjs',
+            'tests/asistente-numerales-v3.test.cjs',
+            'tests/asistente-regresiones-20261012.test.cjs',
+            'tests/asistente-operativos-realizados.test.cjs',
+            'tests/stats-salida-proteccion.test.cjs',
+            'tests/stats-relevo-acople-local.test.cjs',
+            'tests/stats-control-superior-evento.test.cjs',
+            'tests/stats-procedimiento-evento-20261017.test.cjs',
+            'tests/stats-procedimiento-autovinculo-20261017.test.cjs',
+            'tests/pestanas-carga-sin-parpadeo.test.cjs',
+            'tests/actualizaciones-realtime.test.cjs'
+          )
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
+          node --test @pruebas *> $log
+          $resultado = $LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) {
+            throw "Pruebas privadas fallidas. Reproducirlas en el repositorio privado; no se imprimen informes policiales en logs publicos."
+          }
+          Write-Host "Pruebas de regresion superadas."
+
+      - name: Instalar dependencias del instalador
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          npm install --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "No se pudieron instalar dependencias." }
+          npm ci --prefix app/filtro-ordenes/servicio-local --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "No se pudieron instalar dependencias de Filtro Ordenes." }
+
+      - name: Generar NSIS para Windows
+        shell: pwsh
+        working-directory: bmzcn
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-compilacion-privada.log'
+          npm run dist:win *> $log
+          $resultado = $LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw "La compilacion fallo. Reproducirla en entorno privado para revisar detalles." }
+          Write-Host "Electron Builder termino satisfactoriamente."
+
+      - name: Comprobar integridad de paquete y actualizaciones
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $exes = @(Get-ChildItem -Path dist -Filter '*.exe' -File)
+          if ($exes.Count -ne 1) { throw "Se esperaba exactamente un instalador Windows." }
+          if (-not (Test-Path 'dist/latest.yml')) { throw "No se genero latest.yml." }
+          $latest = Get-Content 'dist/latest.yml' -Raw
+          foreach ($exe in $exes) {
+            if ($exe.Name -match '\s' -or -not $latest.Contains($exe.Name)) {
+              throw "El nombre del instalador no coincide con latest.yml."
+            }
+          }
+          node tests/filtro-instalador-windows-smoke.cjs *> $env:RUNNER_TEMP\bmzcn-smoke-privado.log
+          $resultado = $LASTEXITCODE
+          Remove-Item $env:RUNNER_TEMP\bmzcn-smoke-privado.log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw "Prueba del instalador Filtro Ordenes fallida." }
+          Write-Host "Instalador y actualizacion interna verificados."
+
+      - name: Publicar solo el instalador en Control-Interno
+        shell: pwsh
+        working-directory: bmzcn
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = "v$env:BMZCN_BUILD_VERSION"
+          $archivos = @(Get-ChildItem dist -File | Where-Object {
+            $_.Extension -in @('.exe','.blockmap') -or $_.Name -eq 'latest.yml'
+          } | ForEach-Object { $_.FullName })
+          if (-not $archivos.Count) { throw "No hay instalador para publicar." }
+          gh release create $tag @archivos --repo kusne/Control-Interno --title "BMZCN Desktop $env:BMZCN_BUILD_VERSION" --notes "Instalador generado por GitHub Actions en Control-Interno a partir de un checkout privado y de solo lectura de kusne/BMZCN. El codigo fuente y su historial no se publicaron." --latest
+          if ($LASTEXITCODE -ne 0) { throw "No se publico el release en Control-Interno." }
+          Write-Host "Release creado: $tag"
