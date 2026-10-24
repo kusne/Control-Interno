@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-24; importación Word auditada, mayoría de guardia, 460/22 y alcoholemia separados.
+# Build solicitado: cotejar informes Word con numerales STATS, alertas auditables y clasificación manual.
 on:
   workflow_dispatch:
   push:
@@ -108,6 +108,7 @@ jobs:
             'tests/informes-layout-densidad-xy.test.cjs',
             'tests/informes-importador-docx-realtime.test.cjs',
             'tests/informes-importador-auditoria-guardias.test.cjs',
+            'tests/informes-conciliacion-stats.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
             'tests/asistente-integracion-v2.test.cjs',
