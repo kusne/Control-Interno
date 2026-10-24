@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: BMZCN main 2026-10-24; conservar tamaño original del importador Word en cabecera.
+# Build solicitado: 2026-10-24; importación Word auditada, mayoría de guardia, 460/22 y alcoholemia separados.
 on:
   workflow_dispatch:
   push:
@@ -107,6 +107,7 @@ jobs:
             'tests/informes-layout-compacto.test.cjs',
             'tests/informes-layout-densidad-xy.test.cjs',
             'tests/informes-importador-docx-realtime.test.cjs',
+            'tests/informes-importador-auditoria-guardias.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
             'tests/asistente-integracion-v2.test.cjs',
