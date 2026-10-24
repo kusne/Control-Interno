@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: BMZCN main 2026-10-24; Informes a tres columnas, selección abreviada y elevación lateral.
+# Build solicitado: BMZCN main 2026-10-24; mover Importar informes Word a cabecera entre título y Actualizar.
 on:
   workflow_dispatch:
   push:
