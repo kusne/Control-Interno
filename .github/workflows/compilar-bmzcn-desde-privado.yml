@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: Excel Detalles, numerales 0 y colores de plantilla original, 2026-10-24.
+# Build solicitado: 2026-10-24: clasificador automático Excel ablación, 911/Central, vial, forestal, pesca, ASSAL.
 on:
   workflow_dispatch:
   push:
