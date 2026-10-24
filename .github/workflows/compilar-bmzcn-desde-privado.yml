@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: clasificacion ordenamiento vehicular usa cono.svg (regresion 2026-10-23).
+# Build solicitado: nuevo frontend Informes con exterior claro y actuaciones oscuras (2026-10-24).
 on:
   workflow_dispatch:
   push:
@@ -103,6 +103,7 @@ jobs:
           $pruebas = @(
             'tests/seguridad-autenticacion-supabase-v2.test.cjs',
             'tests/informes-gestion-elevaciones.test.cjs',
+            'tests/informes-contraste-visual.test.cjs',
             'tests/informes-importador-docx-realtime.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
