@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: Word semanal en cabecera y tarjetas de informes compactas (2026-10-24).
+# Build solicitado: densidad X/Y en tarjetas y métricas; elevación y Word priorizados (2026-10-24).
 on:
   workflow_dispatch:
   push:
@@ -105,6 +105,7 @@ jobs:
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
             'tests/informes-layout-compacto.test.cjs',
+            'tests/informes-layout-densidad-xy.test.cjs',
             'tests/informes-importador-docx-realtime.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
