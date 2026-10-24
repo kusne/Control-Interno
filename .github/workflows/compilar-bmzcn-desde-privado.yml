@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: BMZCN main 2026-10-24; calendario Filtro-Órdenes y diseño compacto de Informes (Word junto a guardia).
+# Build solicitado: BMZCN main 2026-10-24; Informes a tres columnas, selección abreviada y elevación lateral.
 on:
   workflow_dispatch:
   push:
