@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: generar estadística Excel semanal según cinco modelos, STATS exacto y actuaciones Word.
+# Build solicitado: Excel Detalles, numerales 0 y colores de plantilla original, 2026-10-24.
 on:
   workflow_dispatch:
   push:
