@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: cotejar informes Word con numerales STATS, alertas auditables y clasificación manual.
+# Build solicitado: generar estadística Excel semanal según cinco modelos, STATS exacto y actuaciones Word.
 on:
   workflow_dispatch:
   push:
@@ -109,6 +109,7 @@ jobs:
             'tests/informes-importador-docx-realtime.test.cjs',
             'tests/informes-importador-auditoria-guardias.test.cjs',
             'tests/informes-conciliacion-stats.test.cjs',
+            'tests/informes-excel-semanal.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
             'tests/asistente-integracion-v2.test.cjs',
