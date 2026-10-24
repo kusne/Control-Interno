@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: selector de fechas Filtro-Ordenes abre/cierra y Hasta sigue Desde +1 (2026-10-24).
+# Build solicitado: Word semanal en cabecera y tarjetas de informes compactas (2026-10-24).
 on:
   workflow_dispatch:
   push:
@@ -104,6 +104,7 @@ jobs:
             'tests/seguridad-autenticacion-supabase-v2.test.cjs',
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
+            'tests/informes-layout-compacto.test.cjs',
             'tests/informes-importador-docx-realtime.test.cjs',
             'tests/informes-guardia-vigente.test.cjs',
             'tests/informes-elevaciones-reiteradas.test.cjs',
