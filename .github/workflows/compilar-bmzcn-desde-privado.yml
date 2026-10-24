@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: densidad X/Y en tarjetas y métricas; elevación y Word priorizados (2026-10-24).
+# Build solicitado: BMZCN main 2026-10-24; calendario Filtro-Órdenes y diseño compacto de Informes (Word junto a guardia).
 on:
   workflow_dispatch:
   push:
