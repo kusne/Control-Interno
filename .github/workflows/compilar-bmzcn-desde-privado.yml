@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: auditoría de procedimientos, Word institucional, finalizados de la guardia dominical.
+# Build solicitado: 2026-10-25: informes guardia vigente, juzgado editable y elevación judicial corregida.
 on:
   workflow_dispatch:
   push:
@@ -106,6 +106,7 @@ jobs:
             'tests/seguridad-autenticacion-supabase-v2.test.cjs',
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-auditoria-guardias-20261025.test.cjs',
+            'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
             'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
             'tests/informes-layout-compacto.test.cjs',
