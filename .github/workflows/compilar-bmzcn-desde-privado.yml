@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: conciliación 460/22 sin duplicados y Word ASSAL con control de faltantes.
+# Build solicitado: 2026-10-25: compilar ultimo main privado (ASSAL y 460/22, guardia vigente) sin exponer codigo.
 on:
   workflow_dispatch:
   push:
