@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: licencia/DNI unificados con compatibilidad para registros digitales existentes.
+# Build solicitado: 2026-10-25: interpretación unificada de Licencia/DNI, prueba de acta vs licencia corregida.
 on:
   workflow_dispatch:
   push:
