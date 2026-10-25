@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: deduplicación de informes por acta, dominio, marca y modelo, independiente de hora.
+# Build solicitado: 2026-10-25: deduplicación por rodado y acta, búsqueda por dominio y regresión de interfaz actualizada.
 on:
   workflow_dispatch:
   push:
