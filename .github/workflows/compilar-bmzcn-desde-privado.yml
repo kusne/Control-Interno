@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: corrección verificada de actuaciones por guardia, juzgado y elevaciones, más regresión de nota previa.
+# Build solicitado: 2026-10-25: número de elevación automático y tarjetas compactas del acumulador.
 on:
   workflow_dispatch:
   push:
@@ -107,6 +107,8 @@ jobs:
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-auditoria-guardias-20261025.test.cjs',
             'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
+            'tests/informes-elevacion-automatica-20261025.test.cjs',
+            'tests/stats-acumulados-operativos-densidad-20261025.test.cjs',
             'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
             'tests/informes-layout-compacto.test.cjs',
