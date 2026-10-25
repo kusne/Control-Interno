@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: soporte de 23 clases y varias clases por carnet en Informes GP y BMZCN.
+# Build solicitado: 2026-10-25: deduplicación de informes por acta, dominio, marca y modelo, independiente de hora.
 on:
   workflow_dispatch:
   push:
@@ -80,6 +80,7 @@ jobs:
           node --check preload.js
           if ($LASTEXITCODE -ne 0) { throw "Electron preload.js no supera verificacion de sintaxis." }
           node --check app/informes/gestion.js
+          node --check app/informes/dedupe-actuaciones.js
           if ($LASTEXITCODE -ne 0) { throw "Informes Gestion no supera sintaxis." }
           node --check app/informes/auditoria-procedimientos.js
           if ($LASTEXITCODE -ne 0) { throw "Auditoria de procedimientos no supera sintaxis." }
@@ -109,6 +110,8 @@ jobs:
             'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
             'tests/informes-elevacion-automatica-20261025.test.cjs',
             'tests/informes-alcoholemia-licencia-dni-20261025.test.cjs',
+            'tests/informes-dedupe-dominio-20261025.test.cjs',
+            'tests/informes-dedupe-integracion-20261025.test.cjs',
             'tests/stats-acumulados-operativos-densidad-20261025.test.cjs',
             'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
