@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: elevación automática y acumulados compactos, prueba de evento finalizado dinámica corregida.
+# Build solicitado: 2026-10-25: entrada única Licencia/DNI en Informes GP y lectura corregida en BMZCN.
 on:
   workflow_dispatch:
   push:
@@ -108,6 +108,7 @@ jobs:
             'tests/informes-auditoria-guardias-20261025.test.cjs',
             'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
             'tests/informes-elevacion-automatica-20261025.test.cjs',
+            'tests/informes-alcoholemia-licencia-dni-20261025.test.cjs',
             'tests/stats-acumulados-operativos-densidad-20261025.test.cjs',
             'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
