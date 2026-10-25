@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-24: clasificador automático Excel ablación, 911/Central, vial, forestal, pesca, ASSAL.
+# Build solicitado: 2026-10-25: auditoría de procedimientos, Word institucional, finalizados de la guardia dominical.
 on:
   workflow_dispatch:
   push:
@@ -81,6 +81,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Electron preload.js no supera verificacion de sintaxis." }
           node --check app/informes/gestion.js
           if ($LASTEXITCODE -ne 0) { throw "Informes Gestion no supera sintaxis." }
+          node --check app/informes/auditoria-procedimientos.js
+          if ($LASTEXITCODE -ne 0) { throw "Auditoria de procedimientos no supera sintaxis." }
           node --check app/recursos/recursos-api.js
           if ($LASTEXITCODE -ne 0) { throw "Recursos API no supera sintaxis." }
           node --check app/stats/Frontend/Acumulados/iconos-clasificacion-operativos.js
@@ -103,6 +105,8 @@ jobs:
           $pruebas = @(
             'tests/seguridad-autenticacion-supabase-v2.test.cjs',
             'tests/informes-gestion-elevaciones.test.cjs',
+            'tests/informes-auditoria-guardias-20261025.test.cjs',
+            'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
             'tests/informes-contraste-visual.test.cjs',
             'tests/informes-layout-compacto.test.cjs',
             'tests/informes-layout-densidad-xy.test.cjs',
