@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: número de elevación automático y tarjetas compactas del acumulador.
+# Build solicitado: 2026-10-25: elevación automática y tarjetas compactas, regresión visual multilínea corregida.
 on:
   workflow_dispatch:
   push:
