@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: informes guardia vigente, juzgado editable y elevación judicial corregida.
+# Build solicitado: 2026-10-25: corrección verificada de actuaciones por guardia, juzgado y elevaciones, más regresión de nota previa.
 on:
   workflow_dispatch:
   push:
