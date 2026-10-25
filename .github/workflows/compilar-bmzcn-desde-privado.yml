@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: interpretación unificada de Licencia/DNI, prueba de acta vs licencia corregida.
+# Build solicitado: 2026-10-25: soporte de 23 clases y varias clases por carnet en Informes GP y BMZCN.
 on:
   workflow_dispatch:
   push:
