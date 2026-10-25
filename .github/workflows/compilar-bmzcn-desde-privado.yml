@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: entrada única Licencia/DNI en Informes GP y lectura corregida en BMZCN.
+# Build solicitado: 2026-10-25: licencia y DNI unidos, tests adaptados a clase alfabética válida.
 on:
   workflow_dispatch:
   push:
