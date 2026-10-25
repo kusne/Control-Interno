@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: formato Word semanal con día de semana, Times New Roman 12 e interlineado institucional.
+# Build solicitado: 2026-10-25: conciliación 460/22 sin duplicados y Word ASSAL con control de faltantes.
 on:
   workflow_dispatch:
   push:
@@ -80,6 +80,8 @@ jobs:
           node --check preload.js
           if ($LASTEXITCODE -ne 0) { throw "Electron preload.js no supera verificacion de sintaxis." }
           node --check app/informes/gestion.js
+          node --check app/informes/conciliacion-word-semanal.js
+          node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
           node --check app/informes/formato-word-semanal.js
           node --check app/informes/informes.js
           node --check app/informes/dedupe-actuaciones.js
@@ -109,6 +111,7 @@ jobs:
             'tests/seguridad-autenticacion-supabase-v2.test.cjs',
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-word-semanal-estilo-fecha-20261025.test.cjs',
+            'tests/informes-assal-y-numerales-460-20261025.test.cjs',
             'tests/informes-auditoria-guardias-20261025.test.cjs',
             'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
             'tests/informes-elevacion-automatica-20261025.test.cjs',
