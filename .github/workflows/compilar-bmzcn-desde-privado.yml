@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: restaurar descarga Word e incluir ASSAL directamente desde archivo DOCX importado.
+# Build solicitado: 2026-10-25: compilar corrección verificada de Word descargable y ASSAL desde importación (regresión restaurada).
 on:
   workflow_dispatch:
   push:
