@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - historial STATS, vista en Ingresos y DOCX acumulados + resultado.
+# Build solicitado: 2026-10-26 - historial STATS y DOCX; estilo compacto preservado (regresiones corregidas).
 on:
   workflow_dispatch:
   push:
