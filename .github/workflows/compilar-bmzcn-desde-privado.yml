@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - Corregir fetch (Illegal invocation) en Auditoría / Estadísticas Guardadas y validar regresión.
+# Build solicitado: 2026-10-26 - BMZCN main d11cbd9887fd243e11e3ae530acd572cbad15a7f; archivar estadísticas con fuentes y Word fiel en Auditoría.
 on:
   workflow_dispatch:
   push:
