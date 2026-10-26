@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - historial STATS y DOCX; validación estricta de Backend/Frontend satisfecha.
+# Build solicitado: 2026-10-26 - Mover historial a Auditoría con dos solapas, Word por períodos y revertir interfaz STATS.
 on:
   workflow_dispatch:
   push:
@@ -135,6 +135,7 @@ jobs:
             'tests/asistente-regresiones-20261012.test.cjs',
             'tests/asistente-operativos-realizados.test.cjs',
             'tests/stats-historial-reportes.test.cjs',
+            'tests/auditoria-estadisticas-guardadas.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
