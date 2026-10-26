@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - Mover historial a Auditoría con dos solapas, Word por períodos y revertir interfaz STATS.
+# Build solicitado: 2026-10-26 - Corregir fetch (Illegal invocation) en Auditoría / Estadísticas Guardadas y validar regresión.
 on:
   workflow_dispatch:
   push:
