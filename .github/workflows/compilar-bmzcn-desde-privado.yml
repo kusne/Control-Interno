@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-25: compilar corrección verificada de Word descargable y ASSAL desde importación (regresión restaurada).
+# Build solicitado: 2026-10-26 - historial STATS, vista en Ingresos y DOCX acumulados + resultado.
 on:
   workflow_dispatch:
   push:
@@ -134,6 +134,7 @@ jobs:
             'tests/asistente-numerales-v3.test.cjs',
             'tests/asistente-regresiones-20261012.test.cjs',
             'tests/asistente-operativos-realizados.test.cjs',
+            'tests/stats-historial-reportes.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
