@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Cinco FINALIZADOS 25/10 corregidos, marca COPIAR y parte temporal auditable.
+# Build solicitado: 2026-10-27 - Marca COPIAR por fachada Frontend/API/Backend; validar estructura, 5 finales históricos.
 on:
   workflow_dispatch:
   push:
