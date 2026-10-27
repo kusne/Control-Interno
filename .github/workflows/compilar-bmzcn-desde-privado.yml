@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - Corregir auditoria: sin estadisticas futuras, sin guardados automaticos, archivo solo confirmado.
+# Build solicitado: 2026-10-26 - Recuperar estadisticas semanal y fin de semana del 25/10 guardadas al cierre, filtrar por updated_at.
 on:
   workflow_dispatch:
   push:
