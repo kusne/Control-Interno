@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Inicio continuidad estadistica cortes reales, fuentes originales inmutables, registro de normalizaciones y proteccion de finalizados archivados.
+# Build solicitado: 2026-10-27 - Reintentar instalador 1.0.329 con diagnostico de fase sin filtrar codigo privado ni secretos.
 on:
   workflow_dispatch:
   push:
@@ -197,6 +197,18 @@ jobs:
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-compilacion-privada.log'
           npm run dist:win *> $log
           $resultado = $LASTEXITCODE
+          if ($resultado -ne 0) {
+            $soloDiagnostico = Get-Content $log -Raw
+            $fase = if ($soloDiagnostico -match 'Herramientas/construir-index\.mjs terminó') { 'construir-index' }
+              elseif ($soloDiagnostico -match 'Herramientas/construir-estilos\.mjs terminó') { 'construir-estilos' }
+              elseif ($soloDiagnostico -match 'Herramientas/construir-runtime\.mjs terminó') { 'construir-runtime' }
+              elseif ($soloDiagnostico -match 'Herramientas/Supabase/preparar-supabase\.mjs terminó') { 'preparar-supabase' }
+              elseif ($soloDiagnostico -match 'Herramientas/validar-estructura\.mjs terminó') { 'validar-estructura' }
+              else { 'electron-builder' }
+            Write-Host "Fase fallida (sin imprimir registro privado): $fase"
+            if ($soloDiagnostico -match 'SyntaxError:') { Write-Host "Tipo: error sintactico" }
+            if ($soloDiagnostico -match 'ENOENT') { Write-Host "Tipo: archivo faltante" }
+          }
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           if ($resultado -ne 0) { throw "La compilacion fallo. Reproducirla en entorno privado para revisar detalles." }
           Write-Host "Electron Builder termino satisfactoriamente."
