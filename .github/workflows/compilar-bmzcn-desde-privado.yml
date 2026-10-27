@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Reintentar instalador 1.0.329 con diagnostico de fase sin filtrar codigo privado ni secretos.
+# Build solicitado: 2026-10-27 - Reparada frontera Frontend, recompilar continuidad cortes y originalidad documental BMZCN.
 on:
   workflow_dispatch:
   push:
