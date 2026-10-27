@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Validacion final Auditoria parte temporal verificable, seis FINALIZADOS del 25/10 y sus fuentes originales.
+# Build solicitado: 2026-10-27 - Cinco FINALIZADOS 25/10 corregidos, marca COPIAR y parte temporal auditable.
 on:
   workflow_dispatch:
   push:
@@ -82,6 +82,8 @@ jobs:
           node --check app/informes/gestion.js
           node --check app/informes/conciliacion-word-semanal.js
           node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
+          node --check app/stats/Frontend/Salida/salida-botones-ui.js
+          node --check app/auditoria/frontend/estadisticas-word.js
           node --check app/informes/formato-word-semanal.js
           node --check app/informes/informes.js
           node --check app/informes/dedupe-actuaciones.js
@@ -136,6 +138,7 @@ jobs:
             'tests/asistente-operativos-realizados.test.cjs',
             'tests/stats-historial-reportes.test.cjs',
             'tests/auditoria-estadisticas-guardadas.test.cjs',
+            'tests/stats-marca-copiar-temporal-20261027.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
