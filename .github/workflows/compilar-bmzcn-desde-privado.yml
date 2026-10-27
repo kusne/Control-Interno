@@ -170,6 +170,11 @@ jobs:
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
+              if ($prueba -eq 'tests/stats-conciliacion-partes-temporal-20261027.test.cjs') {
+                Get-Content $log | Where-Object { $_ -match '^\s+(?:name|code|actual|expected|operator):' } | ForEach-Object {
+                  Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
+                }
+              }
               if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs','tests/stats-conciliacion-partes-temporal-20261027.test.cjs')) {
                 Get-Content $log | Select-String '^not ok [0-9]+ - ' | ForEach-Object {
                   Write-Host ("Prueba fallida (solo titulo): " + $_.Line)
