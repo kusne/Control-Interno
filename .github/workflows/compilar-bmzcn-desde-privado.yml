@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Corregido remanente dominical sin temporal ficticio del jueves y añadida prueba regresion; compilar fuente privada actual.
+# Build solicitado: 2026-10-27 - Auditoria reconstruccion documental del parte temporal por FINALIZADOS con hora y fuente exacta, sin textos de ausencia.
 on:
   workflow_dispatch:
   push:
