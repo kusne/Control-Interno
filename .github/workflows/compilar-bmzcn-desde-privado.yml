@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Auditoria reconstruccion documental del parte temporal por FINALIZADOS con hora y fuente exacta, sin textos de ausencia.
+# Build solicitado: 2026-10-27 - Validacion final Auditoria parte temporal verificable, seis FINALIZADOS del 25/10 y sus fuentes originales.
 on:
   workflow_dispatch:
   push:
