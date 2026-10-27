@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Marca COPIAR por fachada Frontend/API/Backend; validar estructura, 5 finales históricos.
+# Build solicitado: 2026-10-27 - Corregir test de marca COPIAR y compilar arquitectura validada.
 on:
   workflow_dispatch:
   push:
@@ -169,7 +169,7 @@ jobs:
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
-              if ($prueba -eq 'tests/auditoria-estadisticas-guardadas.test.cjs') {
+              if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs')) {
                 Get-Content $log | Select-String '^not ok [0-9]+ - ' | ForEach-Object {
                   Write-Host ("Prueba fallida (solo titulo): " + $_.Line)
                 }
