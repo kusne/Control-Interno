@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Reparada frontera Frontend, recompilar continuidad cortes y originalidad documental BMZCN.
+# Build solicitado: 2026-10-27 - Proteccion final para impedir que un FINALIZADO sellado reingrese al corte posterior; regresion y compilacion definitivas.
 on:
   workflow_dispatch:
   push:
