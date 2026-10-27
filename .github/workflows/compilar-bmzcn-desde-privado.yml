@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Diagnosticar tests de Auditoria sin publicar contenidos ni resultados operativos; reparacion de parte temporal.
+# Build solicitado: 2026-10-27 - Revalidar Word de Auditoria sin temporal ficticio, con fuentes fechadas y sin errores de sintaxis.
 on:
   workflow_dispatch:
   push:
