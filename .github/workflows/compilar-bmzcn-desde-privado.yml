@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Corregir test de marca COPIAR y compilar arquitectura validada.
+# Build solicitado: 2026-10-27 - Sintaxis del test COPIAR corregida, validacion de cinco FINALIZADOS.
 on:
   workflow_dispatch:
   push:
