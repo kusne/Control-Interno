@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Expediente auditoria con fuentes acumuladas, parte diario temporal y estadisticas finales; pruebas de corte historico.
+# Build solicitado: 2026-10-27 - Eliminar presencias ficticias en parte diario temporal y avisos técnicos de Auditoría; validación por fecha y clasificación.
 on:
   workflow_dispatch:
   push:
