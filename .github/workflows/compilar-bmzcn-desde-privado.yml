@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Auditoria historica de cinco FINALIZADOS y marca COPIAR.
+# Build solicitado: 2026-10-27 - Evento GENERACION ESTADISTICA en acumulador y temporal sellado por COPIAR.
 on:
   workflow_dispatch:
   push:
@@ -83,6 +83,10 @@ jobs:
           node --check app/informes/conciliacion-word-semanal.js
           node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
           node --check app/stats/Frontend/Salida/salida-botones-ui.js
+          node --check app/stats/Backend/datos/Salida/Persistencia/salida-persistencia-remota.js
+          node --check app/stats/Frontend/Acumulados/componentes/operativos/lista-operativos-acumulados/lista-operativos-acumulados.js
+          node --check app/auditoria/frontend/estadisticas-controlador.js
+          node --check app/auditoria/frontend/estadisticas-repositorio.js
           node --check app/auditoria/frontend/estadisticas-word.js
           node --check app/informes/formato-word-semanal.js
           node --check app/informes/informes.js
