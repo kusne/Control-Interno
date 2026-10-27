@@ -139,6 +139,7 @@ jobs:
             'tests/stats-historial-reportes.test.cjs',
             'tests/auditoria-estadisticas-guardadas.test.cjs',
             'tests/stats-marca-copiar-temporal-20261027.test.cjs',
+            'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
