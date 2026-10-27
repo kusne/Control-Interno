@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Eliminar presencias ficticias en parte diario temporal y avisos técnicos de Auditoría; validación por fecha y clasificación.
+# Build solicitado: 2026-10-27 - Diagnosticar tests de Auditoria sin publicar contenidos ni resultados operativos; reparacion de parte temporal.
 on:
   workflow_dispatch:
   push:
@@ -163,11 +163,16 @@ jobs:
           foreach ($prueba in $pruebas) {
             node --test $prueba *> $log
             $resultado = $LASTEXITCODE
-            Remove-Item $log -Force -ErrorAction SilentlyContinue
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
+              if ($prueba -eq 'tests/auditoria-estadisticas-guardadas.test.cjs') {
+                Get-Content $log | Select-String '^not ok [0-9]+ - ' | ForEach-Object {
+                  Write-Host ("Prueba fallida (solo titulo): " + $_.Line)
+                }
+              }
             }
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
           }
           if ($fallidas.Count -gt 0) {
             throw "No se publica: $($fallidas.Count) archivos de prueba fallaron. Los resultados y los datos privados no se imprimen en logs publicos."
