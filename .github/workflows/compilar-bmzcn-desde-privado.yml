@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-26 - BMZCN main c406881cb2376c0a07fd8dd4b038b2b0f075369c; regresión de Auditoría corregida.
+# Build solicitado: 2026-10-26 - Corregir auditoria: sin estadisticas futuras, sin guardados automaticos, archivo solo confirmado.
 on:
   workflow_dispatch:
   push:
