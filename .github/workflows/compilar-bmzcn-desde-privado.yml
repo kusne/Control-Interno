@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Evento GENERACION ESTADISTICA en acumulador y temporal sellado por COPIAR.
+# Build solicitado: 2026-10-27 - Stats coteja 30 numerales de originales + parte temporal; bloquear salidas inconsistentes.
 on:
   workflow_dispatch:
   push:
