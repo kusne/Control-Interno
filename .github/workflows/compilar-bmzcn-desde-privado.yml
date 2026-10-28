@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Filtro órdenes exclusivas 29/10 y banco 21/10, EPE vigencia 26-31 y túnel sin hora final.
+# Build solicitado: 2026-10-28 - Filtro 29/10 lectura fiel OCV Y UFIV PATRULLAJE; RN 1V11 Y RP 5; coordinación UOR3.
 on:
   workflow_dispatch:
   push:
