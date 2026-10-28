@@ -187,7 +187,7 @@ jobs:
                   Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
                 }
               }
-              if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs','tests/stats-conciliacion-partes-temporal-20261027.test.cjs')) {
+              if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs','tests/stats-conciliacion-partes-temporal-20261027.test.cjs','tests/filtro-guardia-exclusiva-20261029.test.cjs')) {
                 Get-Content $log | Select-String '^not ok [0-9]+ - ' | ForEach-Object {
                   Write-Host ("Prueba fallida (solo titulo): " + $_.Line)
                 }
