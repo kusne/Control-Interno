@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - corregida aserción contradictoria de orden 2140/26, checkout privado actualizado.
+# Build solicitado: 2026-10-28 - reparar publicación de Word original en Auditoría aun con Vista Previa en edición.
 on:
   workflow_dispatch:
   push:
