@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Filtro 29/10 lectura fiel OCV Y UFIV PATRULLAJE; RN 1V11 Y RP 5; coordinación UOR3.
+# Build solicitado: 2026-10-28 - Patrullaje modalidad excluyente; alerta y correccion manual sin asumir OCV ni borrar QTH original.
 on:
   workflow_dispatch:
   push:
