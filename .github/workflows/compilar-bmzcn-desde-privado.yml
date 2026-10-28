@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Revision de inconsistencias antes de ingresar, originales auditables, clic en parte, ocultar descarga.
+# Build solicitado: 2026-10-28 - Correccion filtro exclusivas 29/10, banco de ordenes y prueba EPE 2127 limpieza 2140.
 on:
   workflow_dispatch:
   push:
@@ -162,6 +162,7 @@ jobs:
             'tests/filtro-editor-horarios-word.test.cjs',
             'tests/filtro-fechas-picker-rango.test.cjs',
             'tests/filtro-guardia-epe-aprad-20261017.test.cjs',
+            'tests/filtro-guardia-exclusiva-20261029.test.cjs',
             'tests/filtro-recuperacion.test.cjs',
             'tests/filtro-supervisor-arranque-lento.test.mjs',
             'tests/stats-presencias-aprad-puente-word-cero-20261017.test.cjs',
