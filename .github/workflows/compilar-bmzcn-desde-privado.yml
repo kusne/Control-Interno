@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Stats coteja 30 numerales de originales + parte temporal; bloquear salidas inconsistentes.
+# Build solicitado: 2026-10-27 - Stats calcula y concilia los 30 numerales y graduaciones desde partes originales + temporal.
 on:
   workflow_dispatch:
   push:
