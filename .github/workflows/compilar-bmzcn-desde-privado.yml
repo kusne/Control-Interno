@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Patrullaje modalidad excluyente; alerta y correccion manual sin asumir OCV ni borrar QTH original.
+# Build solicitado: 2026-10-28 - Integración final regla exclusiva Patrullaje, admite OCV+Alcoholemia sin Patrullaje y revisión manual.
 on:
   workflow_dispatch:
   push:
