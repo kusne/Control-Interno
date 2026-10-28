@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Reparar fechaDesdeISO en clasificación manual con prueba de integración completa.
+# Build solicitado: 2026-10-28 - Validación final: fechas disponibles y carga manual sin dependencia del detector automático.
 on:
   workflow_dispatch:
   push:
