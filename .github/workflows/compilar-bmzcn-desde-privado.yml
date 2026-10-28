@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Validación final: fechas disponibles y carga manual sin dependencia del detector automático.
+# Build solicitado: 2026-10-28 - Revision de inconsistencias antes de ingresar, originales auditables, clic en parte, ocultar descarga.
 on:
   workflow_dispatch:
   push:
@@ -90,6 +90,8 @@ jobs:
           node --check app/auditoria/frontend/estadisticas-word.js
           node --check app/stats/Backend/Ingresos/Ingreso_de_Estadisticas/casos-de-uso/procesamiento/ingreso-estadisticas-procesamiento.js
           node --check app/stats/Frontend/Ingresos/Ingreso_de_Estadisticas/eventos/procesamiento/ingreso-estadisticas-procesamiento-ui.js
+          node --check app/stats/Frontend/Acumulados/componentes/estadisticas/lista-estadisticas-acumuladas/lista-estadisticas-acumuladas.js
+          node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
           node --check app/stats/Backend/datos/Ingresos/Ingreso_de_Estadisticas/Supabase/Repositorios/estadisticas-entradas-escritura.js
           node --check app/informes/formato-word-semanal.js
           node --check app/informes/informes.js
@@ -147,6 +149,7 @@ jobs:
             'tests/auditoria-estadisticas-guardadas.test.cjs',
             'tests/stats-marca-copiar-temporal-20261027.test.cjs',
             'tests/stats-entrada-sin-encabezado-manual-20261028.test.cjs',
+            'tests/stats-revision-documental-ingreso-20261028.test.cjs',
             'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
