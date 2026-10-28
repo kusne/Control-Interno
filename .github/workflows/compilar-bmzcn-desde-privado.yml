@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Reparación vista horizontal y horarios abiertos A FINALIZAR; usar último main privado.
+# Build solicitado: 2026-10-28 - corregidos tests del horario abierto A FINALIZAR; compilar ultimo main.
 on:
   workflow_dispatch:
   push:
