@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Correccion filtro exclusivas 29/10, banco de ordenes y prueba EPE 2127 limpieza 2140.
+# Build solicitado: 2026-10-28 - Filtro órdenes exclusivas 29/10 y banco 21/10, EPE vigencia 26-31 y túnel sin hora final.
 on:
   workflow_dispatch:
   push:
