@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Ingreso manual sin encabezado conservando original y observación Auditoría.
+# Build solicitado: 2026-10-28 - Reparar fechaDesdeISO en clasificación manual con prueba de integración completa.
 on:
   workflow_dispatch:
   push:
