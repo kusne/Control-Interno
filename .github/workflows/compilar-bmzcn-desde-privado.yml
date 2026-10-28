@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - corregidos tests del horario abierto A FINALIZAR; compilar ultimo main.
+# Build solicitado: 2026-10-28 - corregida aserción contradictoria de orden 2140/26, checkout privado actualizado.
 on:
   workflow_dispatch:
   push:
