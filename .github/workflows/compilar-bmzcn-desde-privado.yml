@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-27 - Stats cotejo integral final con articulo 10 bis y valores de graduacion documentados.
+# Build solicitado: 2026-10-27 - Stats concilia numerales, graduaciones y Detalles desde originales+temporal, con pruebas.
 on:
   workflow_dispatch:
   push:
