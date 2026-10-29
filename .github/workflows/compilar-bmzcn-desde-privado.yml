@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - reparar publicación de Word original en Auditoría aun con Vista Previa en edición.
+# Build solicitado: 2026-10-28 - Auditoría orden 29/10 y vista publicada sin errores originales; compilar main privado.
 on:
   workflow_dispatch:
   push:
