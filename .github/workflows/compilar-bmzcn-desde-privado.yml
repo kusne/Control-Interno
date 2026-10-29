@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-28 - Auditoría sin ocultar órdenes y operativo editado libre de alerta antigua.
+# Build solicitado: 2026-10-29 - Alta manual Filtro-Órdenes corregida y protegida frente a duplicados.
 on:
   workflow_dispatch:
   push:
@@ -160,6 +160,7 @@ jobs:
             'tests/actualizaciones-realtime.test.cjs',
             'tests/asistente-personal-colectivo.test.cjs',
             'tests/filtro-editor-horarios-word.test.cjs',
+            'tests/filtro-alta-manual-vista-20261029.test.cjs',
             'tests/filtro-fechas-picker-rango.test.cjs',
             'tests/filtro-guardia-epe-aprad-20261017.test.cjs',
             'tests/filtro-guardia-exclusiva-20261029.test.cjs',
