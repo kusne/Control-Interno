@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - prueba aislada de comprensión de preguntas de seguimiento en español.
+# Build solicitado: 2026-10-30 - segunda etapa conserva intención al calcular numerales puntuales y publicar.
 on:
   workflow_dispatch:
   push:
