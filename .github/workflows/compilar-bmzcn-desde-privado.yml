@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - regresión de reimpresión y conversación institucional corregida y validada.
+# Build solicitado: 2026-10-30 - consultas de faltas Art 83 A/E y formato DD/MM/AAAA en todas las respuestas de ausencias.
 on:
   workflow_dispatch:
   push:
