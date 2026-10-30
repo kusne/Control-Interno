@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - publicación final IA institucional: consultas históricas, notas descargables y lenguaje natural.
+# Build solicitado: 2026-10-30 - seguimiento multifuente y botones de descarga institucional con tests de regresión.
 on:
   workflow_dispatch:
   push:
