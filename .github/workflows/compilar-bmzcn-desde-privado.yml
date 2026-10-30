@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - Restauración persistente de Sin Efecto y conteo de operativos vigentes.
+# Build solicitado: 2026-10-30 - reparar historial Sin Efecto, Blindaje manual, vigencia y auditoría con vistas verificables.
 on:
   workflow_dispatch:
   push:
