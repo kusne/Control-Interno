@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - consultas de faltas Art 83 A/E y formato DD/MM/AAAA en todas las respuestas de ausencias.
+# Build solicitado: 2026-10-30 - herramienta de próximo operativo con contexto, sin efecto y fuentes verificadas; código privado.
 on:
   workflow_dispatch:
   push:
@@ -89,6 +89,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Informes GP tiene error de sintaxis." }
           node --check app/asistente-consultas-institucionales-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Consultas institucionales IA tienen error de sintaxis." }
+          node --check app/asistente-proximo-operativo-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Próximo operativo IA tiene error de sintaxis." }
           node --check app/asistente-respuestas-puntuales-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Las respuestas puntuales tienen error de sintaxis." }
           node --check app/informes/gestion.js
@@ -157,6 +159,7 @@ jobs:
             'tests/asistente-orquestador-v3.test.cjs',
             'tests/agente-bmzcn-v1.test.cjs',
             'tests/asistente-respuestas-puntuales-v1.test.cjs',
+            'tests/asistente-proximo-operativo-v1.test.cjs',
             'tests/asistente-consultas-institucionales-v1.test.cjs',
             'tests/asistente-elevaciones-descarga.test.cjs',
             'tests/asistente-numerales-v3.test.cjs',
@@ -207,7 +210,7 @@ jobs:
                   Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
                 }
               }
-              if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-consultas-institucionales-v1.test.cjs','tests/asistente-elevaciones-descarga.test.cjs','tests/asistente-orquestador-v3.test.cjs')) {
+              if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-consultas-institucionales-v1.test.cjs','tests/asistente-elevaciones-descarga.test.cjs','tests/asistente-orquestador-v3.test.cjs','tests/asistente-proximo-operativo-v1.test.cjs')) {
               Get-Content $log | Where-Object { $_ -match '^\s+(?:error:|code:|name:|actual:|expected:|operator:|stack:|at )' } | Select-Object -First 32 | ForEach-Object {
                 Write-Host ('Diagnostico sintetico: ' + $_.Trim())
               }
