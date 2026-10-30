@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - consulta directa QUIEN FALTO AYER prioritaria: personas de la guardia, no partes ni estadísticas.
+# Build solicitado: 2026-10-30 - contrastar 25 actas FINALIZADAS frente a parte antiguo de 20 y depurar consulta de faltas.
 on:
   workflow_dispatch:
   push:
