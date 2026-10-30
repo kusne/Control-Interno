@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - reconciliar actas reales de cierres 25 vs parte 20; proteger consultas de guardia.
+# Build solicitado: 2026-10-30 - entrega final: actas de cierres, discrepancias de archivos y ausencias de guardia.
 on:
   workflow_dispatch:
   push:
