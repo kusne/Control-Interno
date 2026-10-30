@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - responder 460/22 por guardia y conservar preguntas sobre informe abierto.
+# Build solicitado: 2026-10-30 - validación final de numerales naturales, respuestas breves y seguimientos de guardia.
 on:
   workflow_dispatch:
   push:
