@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - pruebas de etiquetas de Auditoría sincronizadas con UI; Agente IA incluido.
+# Build solicitado: 2026-10-30 - respuestas naturales, datos puntuales y trazabilidad de numerales; código privado.
 on:
   workflow_dispatch:
   push:
@@ -83,6 +83,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Auditoría local del agente tiene error de sintaxis." }
           node --check app/agente-bmzcn-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Agente IA tiene error de sintaxis." }
+          node --check app/asistente-respuestas-puntuales-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Las respuestas puntuales tienen error de sintaxis." }
           node --check app/informes/gestion.js
           node --check app/informes/conciliacion-word-semanal.js
           node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
@@ -148,6 +150,7 @@ jobs:
             'tests/asistente-integracion-v2.test.cjs',
             'tests/asistente-orquestador-v3.test.cjs',
             'tests/agente-bmzcn-v1.test.cjs',
+            'tests/asistente-respuestas-puntuales-v1.test.cjs',
             'tests/asistente-numerales-v3.test.cjs',
             'tests/asistente-regresiones-20261012.test.cjs',
             'tests/asistente-operativos-realizados.test.cjs',
