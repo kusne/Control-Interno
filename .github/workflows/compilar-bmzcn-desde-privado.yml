@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - seguimiento multifuente y botones de descarga institucional con tests de regresión.
+# Build solicitado: 2026-10-30 - regresión de reimpresión y conversación institucional corregida y validada.
 on:
   workflow_dispatch:
   push:
