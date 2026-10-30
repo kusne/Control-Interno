@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - segunda etapa conserva intención al calcular numerales puntuales y publicar.
+# Build solicitado: 2026-10-30 - respuestas por guardia con ausencias, superior firmante, notas y pruebas privadas.
 on:
   workflow_dispatch:
   push:
@@ -83,6 +83,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Auditoría local del agente tiene error de sintaxis." }
           node --check app/agente-bmzcn-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Agente IA tiene error de sintaxis." }
+          node --check app/asistente-consultas-institucionales-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Consultas institucionales IA tienen error de sintaxis." }
           node --check app/asistente-respuestas-puntuales-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Las respuestas puntuales tienen error de sintaxis." }
           node --check app/informes/gestion.js
@@ -151,6 +153,7 @@ jobs:
             'tests/asistente-orquestador-v3.test.cjs',
             'tests/agente-bmzcn-v1.test.cjs',
             'tests/asistente-respuestas-puntuales-v1.test.cjs',
+            'tests/asistente-consultas-institucionales-v1.test.cjs',
             'tests/asistente-numerales-v3.test.cjs',
             'tests/asistente-regresiones-20261012.test.cjs',
             'tests/asistente-operativos-realizados.test.cjs',
@@ -199,7 +202,7 @@ jobs:
                   Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
                 }
               }
-              if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs')) {
+              if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-consultas-institucionales-v1.test.cjs')) {
               Get-Content $log | Where-Object { $_ -match '^\s+(?:error:|code:|name:|actual:|expected:|operator:|stack:|at )' } | Select-Object -First 32 | ForEach-Object {
                 Write-Host ('Diagnostico sintetico: ' + $_.Trim())
               }
