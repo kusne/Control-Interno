@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - herramienta de próximo operativo con contexto, sin efecto y fuentes verificadas; código privado.
+# Build solicitado: 2026-10-30 - consultas IA: autor de estadísticas, ausencias por guardia y carpetas/LAO/Pat C/TD.
 on:
   workflow_dispatch:
   push:
