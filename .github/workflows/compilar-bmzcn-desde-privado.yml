@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-29 - Alta manual Filtro-Órdenes corregida y protegida frente a duplicados.
+# Build solicitado: 2026-10-29 - Excluir informes autónomos de retención de licencia de Word semanales.
 on:
   workflow_dispatch:
   push:
@@ -123,6 +123,7 @@ jobs:
             'tests/informes-gestion-elevaciones.test.cjs',
             'tests/informes-word-semanal-estilo-fecha-20261025.test.cjs',
             'tests/informes-assal-y-numerales-460-20261025.test.cjs',
+            'tests/informes-word-sin-licencias-retenidas.test.cjs',
             'tests/informes-auditoria-guardias-20261025.test.cjs',
             'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
             'tests/informes-elevacion-automatica-20261025.test.cjs',
