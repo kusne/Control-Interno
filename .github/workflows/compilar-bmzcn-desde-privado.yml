@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - corregir coherencia de 3 preguntas y evitar falsas faltas por art 82B/LAO.
+# Build solicitado: 2026-10-30 - integrar participantes historicos de operativos desde BMZCN privado.
 on:
   workflow_dispatch:
   push:
