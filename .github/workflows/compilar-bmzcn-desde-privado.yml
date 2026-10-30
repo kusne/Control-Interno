@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - regresiones para operativos manuales, Sin Efecto, Auditoría y estado real.
+# Build solicitado: 2026-10-30 - versión final con vigencia, marcas, auditoría manual y RPC transaccional protegida.
 on:
   workflow_dispatch:
   push:
