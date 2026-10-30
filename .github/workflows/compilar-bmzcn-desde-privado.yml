@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - reparar historial Sin Efecto, Blindaje manual, vigencia y auditoría con vistas verificables.
+# Build solicitado: 2026-10-30 - regresiones para operativos manuales, Sin Efecto, Auditoría y estado real.
 on:
   workflow_dispatch:
   push:
@@ -166,6 +166,7 @@ jobs:
             'tests/filtro-fechas-picker-rango.test.cjs',
             'tests/filtro-guardia-epe-aprad-20261017.test.cjs',
             'tests/filtro-guardia-exclusiva-20261029.test.cjs',
+            'tests/filtro-auditoria-manual-sin-efecto-20261030.test.cjs',
             'tests/filtro-recuperacion.test.cjs',
             'tests/filtro-supervisor-arranque-lento.test.mjs',
             'tests/stats-presencias-aprad-puente-word-cero-20261017.test.cjs',
