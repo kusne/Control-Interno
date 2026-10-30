@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - entrega RAG híbrido V1 con corrección de constes y pruebas de prioridades.
+# Build solicitado: 2026-10-30 - RAG V1 final: sin alucinación en fallback y fuentes optativas, con pruebas UI.
 on:
   workflow_dispatch:
   push:
