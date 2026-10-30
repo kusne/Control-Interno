@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-29 - Corregir rechazo de COPIAR intersemanal por g/l sin numeral con cero test.
+# Build solicitado: 2026-10-30 - Restauración persistente de Sin Efecto y conteo de operativos vigentes.
 on:
   workflow_dispatch:
   push:
