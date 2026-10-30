@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - RAG V1 final: sin alucinación en fallback y fuentes optativas, con pruebas UI.
+# Build solicitado: 2026-10-30 - corregir coherencia de 3 preguntas y evitar falsas faltas por art 82B/LAO.
 on:
   workflow_dispatch:
   push:
