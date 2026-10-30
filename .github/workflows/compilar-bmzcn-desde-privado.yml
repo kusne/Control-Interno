@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - Libro de Guardia: fechas cortas, constes, fojas autenticadas; pruebas de catálogo corregidas.
+# Build solicitado: 2026-10-30 - consulta directa QUIEN FALTO AYER prioritaria: personas de la guardia, no partes ni estadísticas.
 on:
   workflow_dispatch:
   push:
