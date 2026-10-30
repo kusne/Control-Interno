@@ -98,11 +98,11 @@ jobs:
           node --check asistente-local-electron.cjs
           if ($LASTEXITCODE -ne 0) { throw "Síntesis local RAG tiene error de sintaxis." }
           node --check app/asistente-orquestador-v3.js
+          if ($LASTEXITCODE -ne 0) { throw "Orquestador híbrido tiene error de sintaxis." }
           node --check app/asistente-participantes-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Módulo de participantes de operativos inválido." }
           node --check app/asistente-orquestador-participantes-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
-          if ($LASTEXITCODE -ne 0) { throw "Orquestador híbrido tiene error de sintaxis." }
           node --check app/asistente-respuestas-puntuales-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Las respuestas puntuales tienen error de sintaxis." }
           node --check app/informes/gestion.js
