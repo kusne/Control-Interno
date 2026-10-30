@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - integrar participantes historicos de operativos desde BMZCN privado.
+# Build solicitado: 2026-10-30 - exportar conversación IA a TXT desde botón compacto en el chat.
 on:
   workflow_dispatch:
   push:
@@ -210,6 +210,7 @@ jobs:
             'tests/iconos-clasificacion-operativos.test.cjs',
             'tests/stats-ingreso-semanal-pegado-guardia-pasada.test.cjs',
             'tests/stats-retorno-pestana-sin-parpadeo.test.cjs',
+            'tests/chat-vista-mensajeria.test.cjs',
             'tests/chat-natural-saludos.test.cjs'
           )
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
