@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-29 - Excluir informes autónomos de retención de licencia de Word semanales.
+# Build solicitado: 2026-10-29 - Corregir rechazo de COPIAR intersemanal por g/l sin numeral con cero test.
 on:
   workflow_dispatch:
   push:
@@ -149,6 +149,7 @@ jobs:
             'tests/stats-historial-reportes.test.cjs',
             'tests/auditoria-estadisticas-guardadas.test.cjs',
             'tests/stats-marca-copiar-temporal-20261027.test.cjs',
+            'tests/stats-copiar-alcoholemias-sin-numeral-20261028.test.cjs',
             'tests/stats-entrada-sin-encabezado-manual-20261028.test.cjs',
             'tests/stats-revision-documental-ingreso-20261028.test.cjs',
             'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
