@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: consultas verificables de flota BMZCN; KM, combustible, tipos, servicio, controles históricos y regresiones.
+# Build solicitado: corregir vehículos fiscalizados desde cierres, respuesta puntual y regresiones; código privado BMZCN.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
