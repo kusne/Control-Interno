@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: regresiones QA tercera ronda 205 preguntas; historial, asistencia, recursos y auditabilidad. Fuentes privadas.
+# Build solicitado: diagnostico de rutas de preguntas QA sin exponer registros ni fuentes privados.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
@@ -231,6 +231,9 @@ jobs:
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
               if ($prueba -eq 'tests/asistente-conversacion-verificada-v4.test.cjs') {
+                Get-Content $log | Where-Object { $_ -match 'QA_FIX_DIAG=([a-z_]+)' } | ForEach-Object {
+                  if ($_ -match 'QA_FIX_DIAG=([a-z_]+)') { Write-Host ('Diagnostico de ruta sintetica: ' + $Matches[1]) }
+                }
                 Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
                   if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Regresion V4 fallida (indice): ' + $Matches[1]) }
                 }
