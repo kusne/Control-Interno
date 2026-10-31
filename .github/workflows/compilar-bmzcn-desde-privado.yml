@@ -1,5 +1,6 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-31 - jerarquia y NI de personal con validacion de LAO fechada; 22 regresiones.
+# Build solicitado: 2026-10-31 - preguntas consecutivas en minuscula, contexto de guardia y validacion LAO.
+# Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
   push:
