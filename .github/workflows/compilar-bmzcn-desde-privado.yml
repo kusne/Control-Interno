@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: diagnostico de rutas de preguntas QA sin exponer registros ni fuentes privados.
+# Build solicitado: QA cuarta ronda 205 preguntas: asistencia, fecha, movilidad de transporte, control superior y fuentes; repositorio privado.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
