@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-30 - exportar conversación IA a TXT desde botón compacto en el chat.
+# Build solicitado: 2026-10-30 - TXT de chat y horario 24h verificados con 10 pruebas.
 on:
   workflow_dispatch:
   push:
