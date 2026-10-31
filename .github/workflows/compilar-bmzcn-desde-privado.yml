@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-31 - preguntas consecutivas en minuscula, contexto de guardia y validacion LAO.
+# Build solicitado: 2026-10-31 - corregir Chat IA referente del personal, LAO e intersemanales; pruebas de regresion.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
