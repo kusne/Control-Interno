@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: QA ronda quinta 205 preguntas; conciliación programados/finalizados, licencias, QTH, informes 460/22; fuentes privadas.
+# Build solicitado: QA manual BMZCN; captura opt-in de preguntas y respuestas, marcado de errores en Supabase RLS, sin código privado.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
