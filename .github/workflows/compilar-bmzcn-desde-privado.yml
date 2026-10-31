@@ -228,6 +228,14 @@ jobs:
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
+              if ($prueba -eq 'tests/asistente-conversacion-verificada-v4.test.cjs') {
+                Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
+                  if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Regresion V4 fallida (indice): ' + $Matches[1]) }
+                }
+                Get-Content $log | Where-Object { $_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)' } | ForEach-Object {
+                  if ($_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)') { Write-Host ('Regresion V4 fallida (linea): ' + $Matches[1]) }
+                }
+              }
               if ($prueba -eq 'tests/stats-conciliacion-partes-temporal-20261027.test.cjs') {
                 Get-Content $log | Where-Object { $_ -match '^\s+(?:name|code|actual|expected|operator):' } | ForEach-Object {
                   Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
