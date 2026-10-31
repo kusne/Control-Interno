@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: QA manual BMZCN; captura opt-in de preguntas y respuestas, marcado de errores en Supabase RLS, sin código privado.
+# Build solicitado: consultas verificables de flota BMZCN; KM, combustible, tipos, servicio, controles históricos y regresiones.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
