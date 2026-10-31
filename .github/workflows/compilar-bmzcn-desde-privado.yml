@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: QA segunda ronda 205 respuestas, corregir NI, asistencia, numerales y fuentes sin exponer codigo.
+# Build solicitado: regresiones QA tercera ronda 205 preguntas; historial, asistencia, recursos y auditabilidad. Fuentes privadas.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
