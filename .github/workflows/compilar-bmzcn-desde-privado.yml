@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: QA opt-in read-only con sesiones temporales y pruebas en app instalada; sin publicar fuentes.
+# Build solicitado: regresiones QA 205 preguntas, referencias, programados/publicados y filtro de lectura; fuente privada.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
