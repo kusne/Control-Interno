@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-31 - corregir Chat IA referente del personal, LAO e intersemanales; pruebas de regresion.
+# Build solicitado: QA opt-in read-only con sesiones temporales y pruebas en app instalada; sin publicar fuentes.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
@@ -87,6 +87,7 @@ jobs:
           node --check app/agente-bmzcn-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Agente IA tiene error de sintaxis." }
           node --check app/ai-chat-vista.js
+          node --check app/ai-chat-qa-puente.js
           if ($LASTEXITCODE -ne 0) { throw "Vista de Chat IA tiene error de sintaxis." }
           node --check app/informes/gestion.js
           if ($LASTEXITCODE -ne 0) { throw "Informes GP tiene error de sintaxis." }
@@ -218,6 +219,7 @@ jobs:
             'tests/stats-ingreso-semanal-pegado-guardia-pasada.test.cjs',
             'tests/stats-retorno-pestana-sin-parpadeo.test.cjs',
             'tests/chat-vista-mensajeria.test.cjs',
+            'tests/chat-qa-puente-20261031.test.cjs',
             'tests/chat-natural-saludos.test.cjs'
           )
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
