@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: 2026-10-31 - mejora robusta chat IA V4, 40 preguntas y multipreguntas verificadas.
+# Build solicitado: 2026-10-31 - respuestas cortas y contundentes de IA; 9 preguntas del TXT verificadas.
 on:
   workflow_dispatch:
   push:
