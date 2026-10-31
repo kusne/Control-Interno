@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: Chat IA asistente flotante, edicion Personal autorizada, informes y alertas Direccion. QA octubre 2026.
+# Build solicitado: incluir y validar corpus QA 5000 reproducible desde BMZCN privado; publicar solo binarios.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
