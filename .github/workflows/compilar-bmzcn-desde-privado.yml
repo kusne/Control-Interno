@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion: test video real cambio semanal->mensual->semanal, 100 actas, franja visible y salida institucional coherente.
+# Compilacion de revision del video: primer ingreso semanal 100 actas, transiciones mensuales y fechas/cabeceras sin residuos.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
