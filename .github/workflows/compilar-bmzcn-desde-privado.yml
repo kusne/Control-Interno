@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: correccion fallos de regresion de copiar sin temporal y acumulador de partes completos.
+# Compilacion 2026-11-01: seis partes 100 actas, pintar+contadores serializados, copiar y guardar verificados.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -197,6 +197,7 @@ jobs:
             'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
             'tests/stats-cuatro-modos-acumulador-canonico-20261101.test.cjs',
             'tests/stats-frontend-numerales-sin-cero-20261101.test.cjs',
+            'tests/stats-posproceso-carga-numerales-20261101.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
