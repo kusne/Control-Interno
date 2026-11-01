@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA 2026-11-01: suite privada aprobada; compilacion final de estadisticas en vivo y Chat IA.
+# Compilacion solicitada 2026-11-01: integrar agente Chat IA desde BMZCN privado.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
