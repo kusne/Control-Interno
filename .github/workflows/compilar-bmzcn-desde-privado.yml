@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: conciliacion de numerales Chat IA y pruebas de operativos/partes; solo instalador publico.
+# Build solicitado: QA guardia Charlie 29/10, calendario jueves y estadisticas en el chat; solo instalador publico.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
