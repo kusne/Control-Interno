@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: cronologia de estados por clave para Chat IA.
+# Compilacion solicitada 2026-11-01: persistencia versionada, numerales, datos manuales y agente.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
