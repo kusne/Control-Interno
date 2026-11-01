@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: garantizar acumulador en cuatro modos y salida sin ceros espurios.
+# Compilacion 2026-11-01: recálculo cuatro modos, pruebas verificadas y frontera Frontend corregida.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
