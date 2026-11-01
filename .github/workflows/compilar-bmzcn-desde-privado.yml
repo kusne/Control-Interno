@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: prueba integrada mapper Supabase, seleccion directa, ocho contadores DOM y copiar/guardar sin temporal ficticio.
+# Compilacion 2026-11-01: correccion fallos de regresion de copiar sin temporal y acumulador de partes completos.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
