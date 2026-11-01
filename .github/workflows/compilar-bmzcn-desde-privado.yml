@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: validacion final acumulador visual, POO, 100 actas, ocho contadores, salida institucional.
+# Compilacion solicitada 2026-11-01: arreglar flujo real Frontend, contadores y Salida; probar seis partes y 100 actas.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -196,6 +196,7 @@ jobs:
             'tests/stats-revision-documental-ingreso-20261028.test.cjs',
             'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
             'tests/stats-cuatro-modos-acumulador-canonico-20261101.test.cjs',
+            'tests/stats-frontend-numerales-sin-cero-20261101.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
