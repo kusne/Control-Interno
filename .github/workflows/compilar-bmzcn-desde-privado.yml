@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: corregir QA prompt() no soportado en Electron; origen privado main commit 397b0347; publicar solo instalador.
+# Build QA 2026-11-01: correcciones de suspendidos, servicios, fechas y repreguntas; compilar solo si supera pruebas.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
