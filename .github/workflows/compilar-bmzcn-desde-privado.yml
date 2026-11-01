@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: cuatro modos y fechas correctas, conteo 100 en Control y Salida, guardar azul y solo lectura tras confirmacion.
+# Compilacion 2026-11-01: corregir regresiones del modo historico y diagnosticar indices de pruebas sinteticas.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -242,6 +242,14 @@ jobs:
                 }
                 Get-Content $log | Where-Object { $_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)' } | ForEach-Object {
                   if ($_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)') { Write-Host ('Regresion V4 fallida (linea): ' + $Matches[1]) }
+                }
+              }
+              if ($prueba -eq 'tests/stats-frontend-numerales-sin-cero-20261101.test.cjs') {
+                Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
+                  if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Estadisticas frontend fallida (indice): ' + $Matches[1]) }
+                }
+                Get-Content $log | Where-Object { $_ -match 'stats-frontend-numerales-sin-cero-20261101\.test\.cjs:([0-9]+):' } | Select-Object -First 8 | ForEach-Object {
+                  if ($_ -match 'stats-frontend-numerales-sin-cero-20261101\.test\.cjs:([0-9]+):') { Write-Host ('Estadisticas frontend fallida (linea): ' + $Matches[1]) }
                 }
               }
               if ($prueba -eq 'tests/asistente-integracion-v2.test.cjs') {
