@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA 2026-11-01: partes diarios persistidos, sumas en vivo, identidad autenticada y botones habilitados.
+# QA 2026-11-01: suite privada aprobada; compilacion final de estadisticas en vivo y Chat IA.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
