@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: corregir frontera Backend sin eventos DOM; compilar instalador seguro.
+# Compilacion 2026-11-01: garantizar acumulador en cuatro modos y salida sin ceros espurios.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -195,6 +195,7 @@ jobs:
             'tests/stats-entrada-sin-encabezado-manual-20261028.test.cjs',
             'tests/stats-revision-documental-ingreso-20261028.test.cjs',
             'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
+            'tests/stats-cuatro-modos-acumulador-canonico-20261101.test.cjs',
             'tests/stats-salida-proteccion.test.cjs',
             'tests/stats-relevo-acople-local.test.cjs',
             'tests/stats-control-superior-evento.test.cjs',
