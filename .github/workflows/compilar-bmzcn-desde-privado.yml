@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: blindaje de parte original ante reportes discrepantes.
+# Compilacion solicitada 2026-11-01: verificar recálculo de acumulador de 100 actas y generar instalador desde main privado.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
