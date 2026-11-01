@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: prueba 100 actas + ocho contadores + modelo POO cuatro modos.
+# Compilacion solicitada 2026-11-01: validacion final acumulador visual, POO, 100 actas, ocho contadores, salida institucional.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
