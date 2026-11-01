@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: arreglar flujo real Frontend, contadores y Salida; probar seis partes y 100 actas.
+# Compilacion solicitada 2026-11-01: frontend actualizado también al cambiar fechas; pruebas DOM, contador y salida.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
