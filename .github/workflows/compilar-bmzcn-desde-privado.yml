@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: corregida prueba de 30 fuentes autorizadas (dos nuevas verificadas en Supabase).
+# Compilacion solicitada 2026-11-01: corregir frontera Backend sin eventos DOM; compilar instalador seguro.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
