@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: recálculo cuatro modos, pruebas verificadas y frontera Frontend corregida.
+# Compilacion solicitada 2026-11-01: POO seleccion canonica seis partes 100 actas, cuatro modos, contadores y salida.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
