@@ -1,6 +1,6 @@
 name: Compilar BMZCN privado con runner publico
-# QA privado Chat IA y Estadisticas validado; compilar fuente privada corregida via runner publico 2026-11-01.
-# Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
+# QA 2026-11-01: partes diarios persistidos, sumas en vivo, identidad autenticada y botones habilitados.
+# Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
   push:
