@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion solicitada 2026-11-01: integrar agente Chat IA desde BMZCN privado.
+# Compilacion solicitada 2026-11-01: priorizar agente IA y corregir enrutamiento QA.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
