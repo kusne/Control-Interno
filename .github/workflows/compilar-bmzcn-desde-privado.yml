@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: corregir rango elegido, sesenta? seis partes 100 actas, visualizacion, copiar y guardar sin ceros.
+# Compilacion 2026-11-01: cuatro modos y fechas correctas, conteo 100 en Control y Salida, guardar azul y solo lectura tras confirmacion.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
