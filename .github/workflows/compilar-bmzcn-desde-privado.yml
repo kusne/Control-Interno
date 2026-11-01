@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: QA calendario de guardias por sesion y 11 servicios desde Estadisticas; solo instalador publico.
+# Build solicitado: Chat IA comprende sesion Charlie, jueves, proximas guardias y numerales reales; solo instalador publico.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
