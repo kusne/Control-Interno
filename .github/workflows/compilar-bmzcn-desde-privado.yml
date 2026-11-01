@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Build solicitado: Chat IA comprende sesion Charlie, jueves, proximas guardias y numerales reales; solo instalador publico.
+# Build solicitado: corregir QA prompt() no soportado en Electron; origen privado main commit 397b0347; publicar solo instalador.
 # Origen exclusivamente privado: kusne/BMZCN@dca6e775 (el checkout usa main); no publicar codigo fuente.
 on:
   workflow_dispatch:
