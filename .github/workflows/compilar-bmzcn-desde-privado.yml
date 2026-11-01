@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: frontend historico por contrato Backend, prueba 100 actas, encabezado semanal y guardado azul.
+# Compilacion: test video real cambio semanal->mensual->semanal, 100 actas, franja visible y salida institucional coherente.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
