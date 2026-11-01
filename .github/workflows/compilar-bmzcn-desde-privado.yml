@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilacion 2026-11-01: prueba DOM 100 actas, titulo institucional, calendario por modo y guardado explicito.
+# Compilacion 2026-11-01: frontend historico por contrato Backend, prueba 100 actas, encabezado semanal y guardado azul.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
