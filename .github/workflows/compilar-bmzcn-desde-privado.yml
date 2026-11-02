@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN 2026-11-01: confirmar inputs con dia, corte 31-10 23:59 y salida institucional con 100 actas.
+# BMZCN 2026-11-01: semanal LUN-DOM, fin de semana VIE-DOM, domingo 23:59, corte siguiente lunes 00:00.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
