@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Diagnostico video BMZCN 2026-11-01: modos, calendario, arranque y contadores comparten una fuente coherente.
+# Revision BMZCN 2026-11-01: pruebas de video, carga y rangos antes del instalador.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
