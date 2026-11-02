@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Validar BMZCN tras el video: periodo [desde,hasta), frontend sincronizado y numerales auditados.
+# BMZCN 2026-11-01: fecha final visible inclusiva, 100 actas y encabezados semanal/fin de semana; probar antes de compilar.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
