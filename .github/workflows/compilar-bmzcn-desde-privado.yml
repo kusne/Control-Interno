@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN 2026-11-01: semanal LUN-DOM, fin de semana VIE-DOM, domingo 23:59, corte siguiente lunes 00:00.
+# BMZCN 2026-11-01: prueba domingos, regla LUN-DOM/VIE-DOM y fin inclusivo sin sumar dos veces fecha exclusivas.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
