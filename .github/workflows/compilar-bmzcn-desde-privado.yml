@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN: solo guardado explicito de estadistica vigente; sin bloqueo de fecha futura; verificar Auditoria, fuentes y Word.
+# BMZCN: GUARDAR azul durante domingo, confirmar persistencia y permitir lectura de archivo confirmado en Auditoria y Word.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
