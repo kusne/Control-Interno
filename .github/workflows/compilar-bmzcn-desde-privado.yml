@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Revision BMZCN 2026-11-01: pruebas de video, carga y rangos antes del instalador.
+# Validar BMZCN tras el video: periodo [desde,hasta), frontend sincronizado y numerales auditados.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
