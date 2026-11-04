@@ -107,6 +107,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
           node --check app/asistente-conversacion-verificada-v4.js
           if ($LASTEXITCODE -ne 0) { throw "El motor conversacional V4 tiene error de sintaxis." }
+          node --check app/asistente-elevaciones-consulta-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "El módulo de elevaciones tiene error de sintaxis." }
+          node --check app/asistente-personal-puntual-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "El módulo de personal puntual tiene error de sintaxis." }
           node --check app/asistente-personal-validado-v1.js
           if ($LASTEXITCODE -ne 0) { throw "El validador de personal tiene error de sintaxis." }
           node --check app/asistente-respuestas-puntuales-v1.js
