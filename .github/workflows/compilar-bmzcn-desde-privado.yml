@@ -115,6 +115,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Filtro de seguridad Groq no supera sintaxis.' }
           node --check app/asistente-groq-qa-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'El panel QA de Groq no supera sintaxis.' }
+          node --check app/asistente-contexto-estadistico-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Continuidad estadistica del chat no supera sintaxis.' }
+          node --check app/ai-chat-vista.js
+          if ($LASTEXITCODE -ne 0) { throw 'Presentacion del chat no supera sintaxis.' }
           node --check app/asistente-conversacion-verificada-v4.js
           if ($LASTEXITCODE -ne 0) { throw "El motor conversacional V4 tiene error de sintaxis." }
           node --check app/asistente-elevaciones-consulta-v1.js
@@ -195,6 +199,7 @@ jobs:
             'tests/asistente-numerales-tercios-v1.test.cjs',
             'tests/asistente-analitica-guardias-20261104.test.cjs',
             'tests/asistente-conversacion-verificada-v4.test.cjs',
+            'tests/asistente-contexto-estadistico-v1.test.cjs',
             'tests/asistente-qa-66E797C871.test.cjs',
             'tests/asistente-groq-qa-v1.test.cjs',
             'tests/asistente-groq-intenciones-v1.test.cjs',
