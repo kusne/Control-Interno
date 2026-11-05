@@ -105,6 +105,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Módulo de participantes de operativos inválido." }
           node --check app/asistente-orquestador-participantes-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
+          node --check app/asistente-groq-intenciones-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Qwen externo no supera sintaxis.' }
+          node --check app/asistente-groq-intenciones-ui-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Activacion Groq no supera sintaxis.' }
+          node --check supabase/functions/bmzcn-groq-intenciones/guard.js
+          if ($LASTEXITCODE -ne 0) { throw 'Filtro de seguridad Groq no supera sintaxis.' }
           node --check app/asistente-groq-qa-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'El panel QA de Groq no supera sintaxis.' }
           node --check app/asistente-conversacion-verificada-v4.js
@@ -189,6 +195,7 @@ jobs:
             'tests/asistente-conversacion-verificada-v4.test.cjs',
             'tests/asistente-qa-66E797C871.test.cjs',
             'tests/asistente-groq-qa-v1.test.cjs',
+            'tests/asistente-groq-intenciones-v1.test.cjs',
             'tests/asistente-personal-validado-v1.test.cjs',
             'tests/agente-bmzcn-v1.test.cjs',
             'tests/asistente-libro-guardia-v1.test.cjs',
