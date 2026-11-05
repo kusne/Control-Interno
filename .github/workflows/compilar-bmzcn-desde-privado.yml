@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN: GUARDAR azul durante domingo, confirmar persistencia y permitir lectura de archivo confirmado en Auditoria y Word.
+# Compilación solicitada el 05/11/2026: utilizar BMZCN privado main y publicar solo instalador en Control-Interno.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
