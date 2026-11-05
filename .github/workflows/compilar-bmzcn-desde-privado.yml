@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Reintento QA 05/11/2026: regex doble fecha corregida; generar únicamente binarios del repositorio privado main.
+# Compilación final QA 05/11/2026: memoria ampliada y conversación conceptual corregida en origen privado main.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
