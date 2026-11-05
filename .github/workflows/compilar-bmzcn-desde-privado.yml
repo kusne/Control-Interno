@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA 05/11/2026: corregir contexto de guardias y cambio de tema estadística-astronomía (pruebas nuevas).
+# QA guardias 05/11/2026: reparar repreguntas con retuvieron y derivación institucional de Decreto 460/22.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
