@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Reparación 05/11/2026: evitar error de actualización por consulta redundante GitHub, agregar recuperación manual.
+# BMZCN IA: validar tres agentes, RLS, memoria, Skills y exportación Excel con gráficos desde origen privado.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -107,6 +107,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
           node --check app/asistente-conversacion-general-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'Ruta conversacional de Qwen no supera sintaxis.' }
+          node --check app/bmzcn-ia-bitacora-v1.js
+          node --check app/bmzcn-ia-coordinador-v1.js
+          node --check app/bmzcn-ia-comparativas-v1.js
+          node --check asistente-exportaciones.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Los módulos multiagente o Excel no superan sintaxis.' }
           node --check app/asistente-groq-motor-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'Motor Groq principal no supera sintaxis.' }
           node --check app/asistente-groq-intenciones-v1.js
@@ -237,6 +242,10 @@ jobs:
             'tests/stats-procedimiento-evento-20261017.test.cjs',
             'tests/stats-procedimiento-autovinculo-20261017.test.cjs',
             'tests/pestanas-carga-sin-parpadeo.test.cjs',
+            'tests/bmzcn-ia-coordinador-v1.test.cjs',
+            'tests/bmzcn-ia-bitacora-v1.test.cjs',
+            'tests/bmzcn-ia-comparativas-v1.test.cjs',
+            'tests/bmzcn-excel-comparativos.test.cjs',
             'tests/actualizaciones-realtime.test.cjs',
             'tests/asistente-personal-colectivo.test.cjs',
             'tests/filtro-editor-horarios-word.test.cjs',
@@ -301,6 +310,13 @@ jobs:
               if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-consultas-institucionales-v1.test.cjs','tests/asistente-elevaciones-descarga.test.cjs','tests/asistente-orquestador-v3.test.cjs','tests/asistente-proximo-operativo-v1.test.cjs','tests/asistente-libro-guardia-v1.test.cjs','tests/asistente-rag-hibrido-v1.test.cjs')) {
               Get-Content $log | Where-Object { $_ -match '^\s+(?:error:|code:|name:|actual:|expected:|operator:|stack:|at )' } | Select-Object -First 32 | ForEach-Object {
                 Write-Host ('Diagnostico sintetico: ' + $_.Trim())
+              }
+            }
+            if ($prueba -in @('tests/bmzcn-ia-coordinador-v1.test.cjs',
+              'tests/bmzcn-ia-bitacora-v1.test.cjs','tests/bmzcn-ia-comparativas-v1.test.cjs',
+              'tests/bmzcn-excel-comparativos.test.cjs')) {
+              Get-Content $log | Select-String '^not ok [0-9]+ - |^  (?:error|code|name|operator):' | Select-Object -First 12 | ForEach-Object {
+                Write-Host ('Prueba sintética multiagente: '+$_.Line)
               }
             }
             if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs','tests/stats-conciliacion-partes-temporal-20261027.test.cjs','tests/filtro-guardia-exclusiva-20261029.test.cjs','tests/filtro-auditoria-manual-sin-efecto-20261030.test.cjs','tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-rag-hibrido-v1.test.cjs')) {
