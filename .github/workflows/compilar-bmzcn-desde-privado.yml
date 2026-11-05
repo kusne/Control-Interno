@@ -109,6 +109,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Ruta conversacional de Qwen no supera sintaxis.' }
           node --check app/bmzcn-ia-bitacora-v1.js
           node --check app/bmzcn-ia-coordinador-v1.js
+          node --check app/bmzcn-ia-acceso-obligatorio-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Puerta obligatoria multiagente: error de sintaxis.' }
           node --check app/bmzcn-ia-comparativas-v1.js
           node --check asistente-exportaciones.cjs
           node --check asistente-excel-comparativos.cjs
@@ -246,6 +248,8 @@ jobs:
             'tests/pestanas-carga-sin-parpadeo.test.cjs',
             'tests/bmzcn-arranque-sin-excel.test.cjs',
             'tests/bmzcn-ia-coordinador-v1.test.cjs',
+            'tests/bmzcn-ia-acceso-obligatorio-v1.test.cjs',
+            'tests/bmzcn-ia-tres-agentes-reales.test.cjs',
             'tests/bmzcn-ia-bitacora-v1.test.cjs',
             'tests/bmzcn-chat-envio-no-bloqueo.test.cjs',
             'tests/bmzcn-ia-comparativas-v1.test.cjs',
