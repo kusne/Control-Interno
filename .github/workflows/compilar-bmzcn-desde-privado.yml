@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Corrección crítica 05/11/2026: verificar que el exportador Excel comparativo esté incluido en app.asar.
+# Reparación de arranque Windows: el instalador verifica main.js y exportador Excel dentro del app.asar final.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -112,6 +112,7 @@ jobs:
           node --check app/bmzcn-ia-comparativas-v1.js
           node --check asistente-exportaciones.cjs
           node --check asistente-excel-comparativos.cjs
+          node --check main.js
           if ($LASTEXITCODE -ne 0) { throw 'Los módulos multiagente o Excel no superan sintaxis.' }
           node --check app/asistente-groq-motor-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'Motor Groq principal no supera sintaxis.' }
@@ -243,6 +244,7 @@ jobs:
             'tests/stats-procedimiento-evento-20261017.test.cjs',
             'tests/stats-procedimiento-autovinculo-20261017.test.cjs',
             'tests/pestanas-carga-sin-parpadeo.test.cjs',
+            'tests/bmzcn-arranque-sin-excel.test.cjs',
             'tests/bmzcn-ia-coordinador-v1.test.cjs',
             'tests/bmzcn-ia-bitacora-v1.test.cjs',
             'tests/bmzcn-ia-comparativas-v1.test.cjs',
@@ -401,7 +403,7 @@ jobs:
           $psi.RedirectStandardError = $true
           $psi.Environment['ELECTRON_RUN_AS_NODE'] = '1'
           $psi.Environment['BMZCN_APP_ASAR'] = $asar
-          $codigo = "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');const comp=req('./asistente-excel-comparativos.cjs');const datos={tipo:'comparativa_tercios',periodo:{desde:'2026-10-01',hasta:'2026-11-01'},filas:['Alfa','Bravo','Charly','Delta'].map(t=>({tercio:t,actas:2,licencias:0,alcoholemias:0,guardias_con_dato:1,guardias_esperadas:1}))};const grafico=comp.crearExcelComparativo(datos);if(grafico.subarray(0,4).toString('hex')!=='504b0304')throw new Error('Grafico XLSX invalido');"
+          $codigo = "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');const fs=require('node:fs');const path=require('node:path');const mainPath=process.env.BMZCN_APP_ASAR+'/main.js';if(!fs.existsSync(mainPath))throw Error('Falta main.js empaquetado');const compPath=process.env.BMZCN_APP_ASAR+'/asistente-excel-comparativos.cjs';if(!fs.existsSync(compPath))throw Error('Falta asistente-excel-comparativos.cjs dentro de app.asar');const mainText=fs.readFileSync(mainPath,'utf8');if(!mainText.includes('registrarExcelComparativos'))throw Error('El main empaquetado no incluye registro de Excel comparativo');const comp=req('./asistente-excel-comparativos.cjs');const datos={tipo:'comparativa_tercios',periodo:{desde:'2026-10-01',hasta:'2026-11-01'},filas:['Alfa','Bravo','Charly','Delta'].map(t=>({tercio:t,actas:2,licencias:0,alcoholemias:0,guardias_con_dato:1,guardias_esperadas:1}))};const grafico=comp.crearExcelComparativo(datos);if(grafico.subarray(0,4).toString('hex')!=='504b0304')throw new Error('Grafico XLSX invalido');"
           [void]$psi.ArgumentList.Add('-e')
           [void]$psi.ArgumentList.Add($codigo)
           $proceso = [System.Diagnostics.Process]::Start($psi)
