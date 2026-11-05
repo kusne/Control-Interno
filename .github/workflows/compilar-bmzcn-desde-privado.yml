@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN IA reintento: exportador OOXML aislado, supervisión JSON, memoria y Skills en repo privado.
+# BMZCN IA: regresiones de Qwen y bitácora resueltas, nueva compilación desde main privado.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
