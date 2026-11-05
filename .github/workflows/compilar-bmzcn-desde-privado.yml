@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Reparación chat bloqueado y Excel de cinco indicadores, pruebas seguras de envío y memoria.
+# QA corregido: permitir consultas manuales al conectar, sin perder borradores ni errores de Excel.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
