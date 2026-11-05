@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA guardias 05/11/2026: reparar repreguntas con retuvieron y derivación institucional de Decreto 460/22.
+# QA final 05/11/2026: priorizar calendario antes de partes y blindar repreguntas de fecha verificadas.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
