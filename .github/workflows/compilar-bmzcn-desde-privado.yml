@@ -105,6 +105,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Módulo de participantes de operativos inválido." }
           node --check app/asistente-orquestador-participantes-v1.js
           if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
+          node --check app/asistente-conversacion-general-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Ruta conversacional de Qwen no supera sintaxis.' }
           node --check app/asistente-groq-motor-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'Motor Groq principal no supera sintaxis.' }
           node --check app/asistente-groq-intenciones-v1.js
@@ -207,6 +209,7 @@ jobs:
             'tests/asistente-groq-qa-v1.test.cjs',
             'tests/asistente-groq-intenciones-v1.test.cjs',
             'tests/asistente-groq-motor-v1.test.cjs',
+            'tests/asistente-conversacion-general-v1.test.cjs',
             'tests/asistente-personal-validado-v1.test.cjs',
             'tests/agente-bmzcn-v1.test.cjs',
             'tests/asistente-libro-guardia-v1.test.cjs',
