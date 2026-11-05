@@ -249,6 +249,8 @@ jobs:
             'tests/bmzcn-arranque-sin-excel.test.cjs',
             'tests/bmzcn-ia-coordinador-v1.test.cjs',
             'tests/bmzcn-ia-acceso-obligatorio-v1.test.cjs',
+            'tests/bmzcn-ia-flujo-resiliente-v2.test.cjs',
+            'tests/bmzcn-qa-ritmo-multiagente.test.cjs',
             'tests/bmzcn-ia-tres-agentes-reales.test.cjs',
             'tests/bmzcn-ia-bitacora-v1.test.cjs',
             'tests/bmzcn-chat-envio-no-bloqueo.test.cjs',
