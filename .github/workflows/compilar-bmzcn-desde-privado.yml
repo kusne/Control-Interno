@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilación solicitada el 05/11/2026: utilizar BMZCN privado main y publicar solo instalador en Control-Interno.
+# Nueva compilación QA 05/11/2026: identidad, contexto, comparaciones y conversación Groq; origen privado main.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
