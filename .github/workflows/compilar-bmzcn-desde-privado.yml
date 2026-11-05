@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA final 05/11/2026: priorizar calendario antes de partes y blindar repreguntas de fecha verificadas.
+# Reparación Excel OOXML 05/11/2026: namespaces, validación ZIP/XML y no exportar sin pedido explícito.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
