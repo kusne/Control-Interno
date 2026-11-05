@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# BMZCN IA: validar tres agentes, RLS, memoria, Skills y exportación Excel con gráficos desde origen privado.
+# BMZCN IA reintento: exportador OOXML aislado, supervisión JSON, memoria y Skills en repo privado.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -111,6 +111,7 @@ jobs:
           node --check app/bmzcn-ia-coordinador-v1.js
           node --check app/bmzcn-ia-comparativas-v1.js
           node --check asistente-exportaciones.cjs
+          node --check asistente-excel-comparativos.cjs
           if ($LASTEXITCODE -ne 0) { throw 'Los módulos multiagente o Excel no superan sintaxis.' }
           node --check app/asistente-groq-motor-v1.js
           if ($LASTEXITCODE -ne 0) { throw 'Motor Groq principal no supera sintaxis.' }
