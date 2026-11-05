@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Compilación final QA 05/11/2026: memoria ampliada y conversación conceptual corregida en origen privado main.
+# Reparación 05/11/2026: evitar error de actualización por consulta redundante GitHub, agregar recuperación manual.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
