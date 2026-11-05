@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# QA corregido: permitir consultas manuales al conectar, sin perder borradores ni errores de Excel.
+# QA 05/11/2026: corregir contexto de guardias y cambio de tema estadística-astronomía (pruebas nuevas).
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
