@@ -1,5 +1,5 @@
 name: Compilar BMZCN privado con runner publico
-# Reparación de arranque Windows: el instalador verifica main.js y exportador Excel dentro del app.asar final.
+# Reparación chat bloqueado y Excel de cinco indicadores, pruebas seguras de envío y memoria.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 on:
   workflow_dispatch:
@@ -247,6 +247,7 @@ jobs:
             'tests/bmzcn-arranque-sin-excel.test.cjs',
             'tests/bmzcn-ia-coordinador-v1.test.cjs',
             'tests/bmzcn-ia-bitacora-v1.test.cjs',
+            'tests/bmzcn-chat-envio-no-bloqueo.test.cjs',
             'tests/bmzcn-ia-comparativas-v1.test.cjs',
             'tests/bmzcn-excel-comparativos.test.cjs',
             'tests/actualizaciones-realtime.test.cjs',
