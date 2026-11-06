@@ -288,6 +288,15 @@ jobs:
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
+              if ($prueba -eq 'tests/filtro-publicacion-colision-vencida-20261106.test.cjs') {
+                Get-Content $log | Where-Object {
+                  $_ -match '^not ok [0-9]+ - ' -or
+                  $_ -match '^  (?:error|name|code|operator):' -or
+                  $_ -match 'filtro-publicacion-colision-vencida-20261106.test.cjs:[0-9]+:'
+                } | Select-Object -First 20 | ForEach-Object {
+                  Write-Host ('Filtro test sintético: '+$_.Trim().Substring(0,[Math]::Min(160,$_.Trim().Length)))
+                }
+              }
               # Solo diagnóstico de casos sintéticos: no imprimir bases ni datos reales.
               if ($prueba -eq 'tests/bmzcn-ia-lecturas-con-supervisor-degradado.test.cjs') {
                 Get-Content $log | Where-Object {
