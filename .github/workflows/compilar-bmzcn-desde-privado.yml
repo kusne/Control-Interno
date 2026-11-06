@@ -267,6 +267,7 @@ jobs:
             'tests/filtro-guardia-exclusiva-20261029.test.cjs',
             'tests/filtro-auditoria-manual-sin-efecto-20261030.test.cjs',
             'tests/filtro-publicacion-colision-vencida-20261106.test.cjs',
+            'tests/filtro-vista-previa-fila-compacta-20261106.test.cjs',
             'tests/filtro-recuperacion.test.cjs',
             'tests/filtro-supervisor-arranque-lento.test.mjs',
             'tests/stats-presencias-aprad-puente-word-cero-20261017.test.cjs',
