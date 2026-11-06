@@ -287,6 +287,16 @@ jobs:
             if ($resultado -ne 0) {
               $fallidas += $prueba
               Write-Host "Prueba no superada: $prueba"
+              # Solo diagnóstico de casos sintéticos: no imprimir bases ni datos reales.
+              if ($prueba -eq 'tests/bmzcn-ia-lecturas-con-supervisor-degradado.test.cjs') {
+                Get-Content $log | Where-Object {
+                  $_ -match '^not ok [0-9]+ - ' -or
+                  $_ -match '^  (?:error|name|code|operator):' -or
+                  $_ -match 'lecturas-con-supervisor-degradado.test.cjs:[0-9]+:'
+                } | Select-Object -First 15 | ForEach-Object {
+                  Write-Host ('QA sintetico: '+$_.Trim().Substring(0,[Math]::Min(160,$_.Trim().Length)))
+                }
+              }
               if ($prueba -eq 'tests/asistente-conversacion-verificada-v4.test.cjs') {
                 Get-Content $log | Where-Object { $_ -match 'QA_FIX_DIAG=([a-z_]+)' } | ForEach-Object {
                   if ($_ -match 'QA_FIX_DIAG=([a-z_]+)') { Write-Host ('Diagnostico de ruta sintetica: ' + $Matches[1]) }
