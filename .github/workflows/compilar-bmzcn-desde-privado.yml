@@ -359,6 +359,11 @@ jobs:
                 }
               }
             }
+            # Exponer solo títulos sintéticos y códigos: el código privado y los datos no se imprimen.
+            Get-Content $log | Where-Object { $_ -match '^not ok [0-9]+ - ' -or $_ -match '^  (?:code|name|operator):' } | Select-Object -First 14 | ForEach-Object {
+              $linea = $_.Trim()
+              Write-Host ('Diagnostico QA: ' + $linea.Substring(0,[Math]::Min(155,$linea.Length)))
+            }
             Remove-Item $log -Force -ErrorAction SilentlyContinue
           }
           if ($fallidas.Count -gt 0) {
