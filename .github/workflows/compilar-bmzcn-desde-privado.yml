@@ -1,4 +1,5 @@
 name: Compilar BMZCN privado con runner publico
+# Ejecucion autorizada: publicar compilacion desde kusne/BMZCN@main (9385c892fba6c0958c7fac6b21eb7a77b0ce217d) - 2026-11-08
 # Reparación Excel OOXML 05/11/2026: namespaces, validación ZIP/XML y no exportar sin pedido explícito.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 # QA 2026-11-05: supervisión final real, contexto extendido, ficción y autocorrección.
