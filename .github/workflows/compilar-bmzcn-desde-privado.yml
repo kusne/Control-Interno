@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: read
   id-token: write
 
 jobs:
@@ -31,6 +32,13 @@ jobs:
           }
           Write-Host "Existe una credencial configurada para consultar el origen privado. No se mostrara su valor."
 
+      - name: Obtener verificador del repositorio público de despliegue
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          path: control-ci
+
       - name: Descargar BMZCN privado sin publicar su historial
         uses: actions/checkout@v4
         with:
@@ -45,6 +53,333 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Comprobar certificación QA del commit privado exacto
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $sha=(git -C bmzcn rev-parse HEAD).Trim().ToLowerInvariant()
+          if ($sha -notmatch '^[a-f0-9]{40}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $latest = (gh release view --repo kusne/Control-Interno --json tagName --jq .tagName).Trim()
+          if ($LASTEXITCODE -ne 0 -or $latest -notmatch '^v1\.0\.(\d+)$') {
+            throw "No se pudo verificar el ultimo release v1.0.X de Control-Interno. No publicar para evitar version incorrecta."
+          }
+          $versionActual = [int]$Matches[1]
+          $nuevaVersion = '1.0.' + ($versionActual + 1)
+          "BMZCN_BUILD_VERSION=$nuevaVersion" >> $env:GITHUB_ENV
+          $env:BMZCN_BUILD_VERSION = $nuevaVersion
+          node -e "const fs=require('fs');const p=require('./package.json');p.version=process.env.BMZCN_BUILD_VERSION;p.build.buildVersion=p.version;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          if ($LASTEXITCODE -ne 0) { throw "No se pudo asignar version." }
+          Write-Host "Version nueva: $nuevaVersion"
+
+      - name: Comprobar el origen y ausencia de tokens embebidos en STATS
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $config = Get-Content "app/stats/Arranque/configuracion/api-stats.js" -Raw
+          if ($config -match "clientToken:\s*'[^']{16,}'") {
+            throw "Publicacion bloqueada: token privado incrustado en Stats."
+          }
+          node --check main.js
+          if ($LASTEXITCODE -ne 0) { throw "Electron main.js no supera verificacion de sintaxis." }
+          node --check preload.js
+          if ($LASTEXITCODE -ne 0) { throw "Electron preload.js no supera verificacion de sintaxis." }
+          node --check asistente-auditoria-electron.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Auditoría local del agente tiene error de sintaxis." }
+          node --check app/asistente-libro-guardia-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Libro de Guardia IA tiene error de sintaxis." }
+          node --check app/agente-bmzcn-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Agente IA tiene error de sintaxis." }
+          node --check app/ai-chat-vista.js
+          node --check app/ai-chat-qa-puente.js
+          if ($LASTEXITCODE -ne 0) { throw "Vista de Chat IA tiene error de sintaxis." }
+          node --check app/informes/gestion.js
+          if ($LASTEXITCODE -ne 0) { throw "Informes GP tiene error de sintaxis." }
+          node --check app/asistente-consultas-institucionales-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Consultas institucionales IA tienen error de sintaxis." }
+          node --check app/asistente-proximo-operativo-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Próximo operativo IA tiene error de sintaxis." }
+          node --check app/asistente-rag-hibrido-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "RAG híbrido tiene error de sintaxis." }
+          node --check asistente-local-electron.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Síntesis local RAG tiene error de sintaxis." }
+          node --check app/asistente-orquestador-v3.js
+          if ($LASTEXITCODE -ne 0) { throw "Orquestador híbrido tiene error de sintaxis." }
+          node --check app/asistente-participantes-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Módulo de participantes de operativos inválido." }
+          node --check app/asistente-orquestador-participantes-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Integración del orquestador de participantes inválida." }
+          node --check app/asistente-conversacion-general-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Ruta conversacional de Qwen no supera sintaxis.' }
+          node --check app/bmzcn-ia-bitacora-v1.js
+          node --check app/bmzcn-ia-coordinador-v1.js
+          node --check app/bmzcn-ia-acceso-obligatorio-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Puerta obligatoria multiagente: error de sintaxis.' }
+          node --check app/bmzcn-ia-comparativas-v1.js
+          node --check asistente-exportaciones.cjs
+          node --check asistente-excel-comparativos.cjs
+          node --check main.js
+          if ($LASTEXITCODE -ne 0) { throw 'Los módulos multiagente o Excel no superan sintaxis.' }
+          node --check app/asistente-groq-motor-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Motor Groq principal no supera sintaxis.' }
+          node --check app/asistente-groq-intenciones-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Qwen externo no supera sintaxis.' }
+          node --check app/asistente-groq-intenciones-ui-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Activacion Groq no supera sintaxis.' }
+          node --check supabase/functions/bmzcn-groq-intenciones/guard.js
+          if ($LASTEXITCODE -ne 0) { throw 'Filtro de seguridad Groq no supera sintaxis.' }
+          node --check app/asistente-groq-qa-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'El panel QA de Groq no supera sintaxis.' }
+          node --check app/asistente-parte-diario-puntual-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Ruteo seguro de partes diarios no supera sintaxis.' }
+          node --check app/asistente-contexto-estadistico-v1.js
+          if ($LASTEXITCODE -ne 0) { throw 'Continuidad estadistica del chat no supera sintaxis.' }
+          node --check app/ai-chat-vista.js
+          if ($LASTEXITCODE -ne 0) { throw 'Presentacion del chat no supera sintaxis.' }
+          node --check app/asistente-conversacion-verificada-v4.js
+          if ($LASTEXITCODE -ne 0) { throw "El motor conversacional V4 tiene error de sintaxis." }
+          node --check app/asistente-elevaciones-consulta-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "El módulo de elevaciones tiene error de sintaxis." }
+          node --check app/asistente-personal-puntual-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "El módulo de personal puntual tiene error de sintaxis." }
+          node --check app/asistente-personal-validado-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "El validador de personal tiene error de sintaxis." }
+          node --check app/asistente-respuestas-puntuales-v1.js
+          if ($LASTEXITCODE -ne 0) { throw "Las respuestas puntuales tienen error de sintaxis." }
+          node --check app/informes/gestion.js
+          node --check app/informes/conciliacion-word-semanal.js
+          node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
+          node --check app/stats/Frontend/Salida/salida-botones-ui.js
+          node --check app/stats/Backend/datos/Salida/Persistencia/salida-persistencia-remota.js
+          node --check app/stats/Frontend/Acumulados/componentes/operativos/lista-operativos-acumulados/lista-operativos-acumulados.js
+          node --check app/auditoria/frontend/estadisticas-controlador.js
+          node --check app/auditoria/frontend/estadisticas-repositorio.js
+          node --check app/auditoria/frontend/estadisticas-word.js
+          node --check app/stats/Backend/Ingresos/Ingreso_de_Estadisticas/casos-de-uso/procesamiento/ingreso-estadisticas-procesamiento.js
+          node --check app/stats/Frontend/Ingresos/Ingreso_de_Estadisticas/eventos/procesamiento/ingreso-estadisticas-procesamiento-ui.js
+          node --check app/stats/Frontend/Acumulados/componentes/estadisticas/lista-estadisticas-acumuladas/lista-estadisticas-acumuladas.js
+          node --check app/stats/Backend/Salida/casos-de-uso/operativos-visibles.js
+          node --check app/stats/Backend/datos/Ingresos/Ingreso_de_Estadisticas/Supabase/Repositorios/estadisticas-entradas-escritura.js
+          node --check app/informes/formato-word-semanal.js
+          node --check app/informes/informes.js
+          node --check app/informes/dedupe-actuaciones.js
+          if ($LASTEXITCODE -ne 0) { throw "Informes Gestion no supera sintaxis." }
+          node --check app/informes/auditoria-procedimientos.js
+          if ($LASTEXITCODE -ne 0) { throw "Auditoria de procedimientos no supera sintaxis." }
+          node --check app/recursos/recursos-api.js
+          if ($LASTEXITCODE -ne 0) { throw "Recursos API no supera sintaxis." }
+          node --check app/stats/Frontend/Acumulados/iconos-clasificacion-operativos.js
+          if ($LASTEXITCODE -ne 0) { throw "Iconos de clasificación no superan sintaxis." }
+          Write-Host "Sintaxis y secretos de cliente verificados."
+
+      - name: Auditar codigo actual sin imprimir valores de secretos
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          node scripts/auditar-secretos.cjs
+          if ($LASTEXITCODE -ne 0) {
+            throw "No se puede publicar el instalador: la auditoria encontro posibles secretos embebidos."
+          }
+
+      - name: Verificar cobertura de calidad y contratos antes del build
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: faltan tests o contratos críticos." }
+          npm run test:blindaje:preflight
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: falló preflight de arquitectura." }
+
+      - name: Preparar dependencias JS sin scripts para QA
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: faltan dependencias para tests." }
+
+      - name: Ejecutar pruebas sin publicar datos operativos en logs
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          # Un único catálogo autoritativo descubre nuevas regresiones de forma
+          # automática. Sin manifiesto/contratos/suficientes tests: no publicar.
+          $pruebas = @(node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs --listar)
+          if ($LASTEXITCODE -ne 0 -or $pruebas.Count -lt 100) {
+            throw "Publicación bloqueada: catálogo de regresiones incompleto."
+          }
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
+          $fallidas = @()
+          foreach ($prueba in $pruebas) {
+            if ($prueba -notmatch '^tests/[A-Za-z0-9_.-]+\.test\.(?:cjs|mjs)$') {
+              throw "Publicación bloqueada: ruta de prueba no autorizada."
+            }
+            node --test $prueba *> $log
+            if ($LASTEXITCODE -ne 0) {
+              $fallidas += $prueba
+              Write-Host ('QA fallida: ' + $prueba)
+              # No imprimir valores reales, fixtures, stacks ni código privado.
+              Get-Content $log | ForEach-Object {
+                if ($_ -match '^not ok (\d+) - ') {
+                  Write-Host ('Caso TAP fallido: ' + $Matches[1])
+                }
+                if ($_ -match '^  (?:code|name|operator):\s*[''"]?([A-Za-z0-9_]+)') {
+                  Write-Host ('Categoría técnica: ' + $Matches[1])
+                }
+              }
+            }
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
+          }
+          if ($fallidas.Count -gt 0) {
+            throw "No se publica: $($fallidas.Count) archivos de prueba fallaron. Los resultados y los datos privados no se imprimen en logs publicos."
+          }
+          Write-Host ("Puerta de calidad aprobada: " + $pruebas.Count + " archivos de prueba.")
+
+      - name: Instalar dependencias del instalador
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          npm install --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "No se pudieron instalar dependencias." }
+          npm ci --prefix app/filtro-ordenes/servicio-local --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "No se pudieron instalar dependencias de Filtro Ordenes." }
+
+      - name: Generar NSIS para Windows
+        shell: pwsh
+        working-directory: bmzcn
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-compilacion-privada.log'
+          npm run dist:win *> $log
+          $resultado = $LASTEXITCODE
+          if ($resultado -ne 0) {
+            $soloDiagnostico = Get-Content $log -Raw
+            $fase = if ($soloDiagnostico -match 'Herramientas/construir-index\.mjs terminó') { 'construir-index' }
+              elseif ($soloDiagnostico -match 'Herramientas/construir-estilos\.mjs terminó') { 'construir-estilos' }
+              elseif ($soloDiagnostico -match 'Herramientas/construir-runtime\.mjs terminó') { 'construir-runtime' }
+              elseif ($soloDiagnostico -match 'Herramientas/Supabase/preparar-supabase\.mjs terminó') { 'preparar-supabase' }
+              elseif ($soloDiagnostico -match 'Herramientas/validar-estructura\.mjs terminó') { 'validar-estructura' }
+              else { 'electron-builder' }
+            Write-Host "Fase fallida (sin imprimir registro privado): $fase"
+            if ($soloDiagnostico -match 'SyntaxError:') { Write-Host "Tipo: error sintactico" }
+            if ($soloDiagnostico -match 'ENOENT') { Write-Host "Tipo: archivo faltante" }
+          }
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw "La compilacion fallo. Reproducirla en entorno privado para revisar detalles." }
+          Write-Host "Electron Builder termino satisfactoriamente."
+
+      - name: Comprobar integridad de paquete y actualizaciones
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $exes = @(Get-ChildItem -Path dist -Filter '*.exe' -File)
+          if ($exes.Count -ne 1) { throw "Se esperaba exactamente un instalador Windows." }
+          if (-not (Test-Path 'dist/latest.yml')) { throw "No se genero latest.yml." }
+          $latest = Get-Content 'dist/latest.yml' -Raw
+          foreach ($exe in $exes) {
+            if ($exe.Name -match '\s' -or -not $latest.Contains($exe.Name)) {
+              throw "El nombre del instalador no coincide con latest.yml."
+            }
+          }
+          node tests/filtro-instalador-windows-smoke.cjs *> $env:RUNNER_TEMP\bmzcn-smoke-privado.log
+          $resultado = $LASTEXITCODE
+          Remove-Item $env:RUNNER_TEMP\bmzcn-smoke-privado.log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw "Prueba del instalador Filtro Ordenes fallida." }
+          Write-Host "Instalador y actualizacion interna verificados."
+
+      - name: Verificar exportacion Excel dentro del paquete Electron
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = Get-ChildItem 'dist/win-unpacked' -Filter '*.exe' -File | Select-Object -First 1
+          if (-not $exe) { throw "No existe ejecutable desempaquetado para verificar Excel." }
+          $asar = (Resolve-Path 'dist/win-unpacked/resources/app.asar').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new($exe.FullName)
+          $psi.UseShellExecute = $false
+          $psi.CreateNoWindow = $true
+          $psi.RedirectStandardOutput = $true
+          $psi.RedirectStandardError = $true
+          $psi.Environment['ELECTRON_RUN_AS_NODE'] = '1'
+          $psi.Environment['BMZCN_APP_ASAR'] = $asar
+          $codigo = "const {createRequire}=require('node:module');const req=createRequire(process.env.BMZCN_APP_ASAR+'/asistente-exportaciones.cjs');const exp=req('./asistente-exportaciones.cjs');const b=exp.crearExcel({tipo:'resumen_estadisticas',modo:'semanal',rango:{desde:'2026-10-05',hasta:'2026-10-11'},valores:{statOperativos:9,statDetalles:14,statAlcoPositivas:1,statRetenciones:1,statDto460:0,statControlArmas:1,statSinEfectos:0,statBloques:9}});if(b.subarray(0,4).toString('hex')!=='504b0304')throw new Error('XLSX invalido');const fs=require('node:fs');const path=require('node:path');const mainPath=process.env.BMZCN_APP_ASAR+'/main.js';if(!fs.existsSync(mainPath))throw Error('Falta main.js empaquetado');const compPath=process.env.BMZCN_APP_ASAR+'/asistente-excel-comparativos.cjs';if(!fs.existsSync(compPath))throw Error('Falta asistente-excel-comparativos.cjs dentro de app.asar');const mainText=fs.readFileSync(mainPath,'utf8');if(!mainText.includes('registrarExcelComparativos'))throw Error('El main empaquetado no incluye registro de Excel comparativo');const comp=req('./asistente-excel-comparativos.cjs');const datos={tipo:'comparativa_tercios',periodo:{desde:'2026-10-01',hasta:'2026-11-01'},filas:['Alfa','Bravo','Charly','Delta'].map(t=>({tercio:t,actas:2,licencias:0,alcoholemias:0,guardias_con_dato:1,guardias_esperadas:1}))};const grafico=comp.crearExcelComparativo(datos);if(grafico.subarray(0,4).toString('hex')!=='504b0304')throw new Error('Grafico XLSX invalido');"
+          [void]$psi.ArgumentList.Add('-e')
+          [void]$psi.ArgumentList.Add($codigo)
+          $proceso = [System.Diagnostics.Process]::Start($psi)
+          if (-not $proceso) { throw "No se pudo iniciar Electron en modo de pruebas." }
+          try {
+            if (-not $proceso.WaitForExit(45000)) {
+              try { $proceso.Kill($true) } catch {}
+              throw "El proceso de validacion Excel no termino en el limite de seguridad."
+            }
+            $salida = $proceso.StandardOutput.ReadToEnd()
+            $errores = $proceso.StandardError.ReadToEnd()
+            if ($proceso.ExitCode -ne 0) {
+              $categoria = 'Error no clasificado'
+              if ($errores -match 'MODULE_NOT_FOUND|Cannot find module') { $categoria = 'Modulo empaquetado faltante' }
+              elseif ($errores -match 'SyntaxError') { $categoria = 'Error de sintaxis' }
+              elseif ($errores -match 'TypeError') { $categoria = 'Error de tipo' }
+              elseif ($errores -match 'ReferenceError') { $categoria = 'Referencia no definida' }
+              elseif ($errores -match 'XLSX invalido') { $categoria = 'Archivo no valido' }
+              Write-Host "Comprobacion Excel: categoria=$categoria; exit_code=$($proceso.ExitCode)"
+              throw "No se puede publicar: el exportador Excel no funciono dentro del ejecutable empaquetado."
+            }
+          } finally {
+            $proceso.Dispose()
+          }
+          Write-Host "El ejecutable empaquetado genera un XLSX correcto y sale con codigo 0."
+
+      - name: Publicar solo el instalador en Control-Interno
+        shell: pwsh
+        working-directory: bmzcn
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = "v$env:BMZCN_BUILD_VERSION"
+          $archivos = @(Get-ChildItem dist -File | Where-Object {
+            $_.Extension -in @('.exe','.blockmap') -or $_.Name -eq 'latest.yml'
+          } | ForEach-Object { $_.FullName })
+          if (-not $archivos.Count) { throw "No hay instalador para publicar." }
+          gh release create $tag @archivos --repo kusne/Control-Interno --title "BMZCN Desktop $env:BMZCN_BUILD_VERSION" --notes "Instalador generado por GitHub Actions en Control-Interno a partir de un checkout privado y de solo lectura de kusne/BMZCN. El codigo fuente y su historial no se publicaron." --latest
+          if ($LASTEXITCODE -ne 0) { throw "No se publico el release en Control-Interno." }
+          Write-Host "Release creado: $tag"
+
+      - name: Notificar automaticamente version a BMZCN Desktop por Realtime
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:ACTIONS_ID_TOKEN_REQUEST_URL -or -not $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
+            throw "La ejecucion publica no tiene permiso OIDC para notificar."
+          }
+          $separador = if ($env:ACTIONS_ID_TOKEN_REQUEST_URL.Contains('?')) { '&' } else { '?' }
+          $oidcUrl = $env:ACTIONS_ID_TOKEN_REQUEST_URL + $separador + 'audience=bmzcn-desktop-release'
+          $token = Invoke-RestMethod -Method Get -Uri $oidcUrl -Headers @{
+            Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+          } -TimeoutSec 20
+          if (-not $token.value) { throw "GitHub no emitio un token de identidad OIDC." }
+          $url = "https://hbnxvwrqxhurdteirsyl.supabase.co/functions/v1/bmzcn-versiones-publicar"
+          $body = @{ version = $env:BMZCN_BUILD_VERSION } | ConvertTo-Json -Compress
+          $respuesta = Invoke-RestMethod -Method Post -Uri $url -Headers @{
+            Authorization = "Bearer $($token.value)"
+          } -Body $body -ContentType 'application/json' -TimeoutSec 30
+          if ($respuesta.ok -ne $true -or $respuesta.version -ne $env:BMZCN_BUILD_VERSION) {
+            throw "El publicador de Supabase no confirmo el instalador."
+          }
+          Write-Host "Version $env:BMZCN_BUILD_VERSION publicada y anunciada a BMZCN Desktop."
+) { throw "Publicación bloqueada: SHA no válido." }
+          $env:BMZCN_SOURCE_SHA=$sha
+          node control-ci/scripts/validar-certificacion-qa.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Publicación bloqueada: no existe QA certificada del commit." }
 
       - name: Calcular nueva version desde la ultima publicacion
         shell: pwsh
