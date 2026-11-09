@@ -1,4 +1,5 @@
 name: QA integral BMZCN sin publicar instalador
+# Certificación posterior a fusión de pruebas de escritorio BMZCN 2a3a823a.
 # Solo lectura. Valida fuentes privadas sin construir paquetes ni crear releases.
 on:
   workflow_dispatch:
