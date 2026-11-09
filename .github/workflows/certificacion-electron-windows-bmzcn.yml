@@ -100,3 +100,29 @@ jobs:
           }
           if (Test-Path 'dist/latest.yml') { throw 'No debe generarse un feed de actualización.' }
           Write-Host 'Certificación sin release, sin instalador y sin credenciales de producción.'
+      - name: Registrar SHA de ejecutable certificado sin datos privados
+        if: success()
+        id: evidencia
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $sha=(git rev-parse HEAD).Trim().ToLowerInvariant()
+          if ($sha -notmatch '^[0-9a-f]{40}$') { throw 'No se puede certificar SHA inválido.' }
+          "source_sha=$sha" >> $env:GITHUB_OUTPUT
+          $resumen=@{
+            source_sha=$sha
+            source_ref='main'
+            result='success'
+            scope='electron-windows-unpacked-login-filtro-preload-ipc'
+            run_id="$env:GITHUB_RUN_ID"
+          }
+          $archivo=Join-Path $env:RUNNER_TEMP 'bmzcn-electron-evidencia.json'
+          $resumen | ConvertTo-Json -Compress | Set-Content -Path $archivo -Encoding UTF8
+      - name: Certificar ejecutable Windows real para el mismo SHA de main
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bmzcn-electron-main-${{ steps.evidencia.outputs.source_sha }}
+          path: ${{ runner.temp }}/bmzcn-electron-evidencia.json
+          if-no-files-found: error
+          retention-days: 14
