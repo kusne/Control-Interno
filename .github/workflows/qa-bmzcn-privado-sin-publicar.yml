@@ -105,8 +105,19 @@ jobs:
                 $detalle = ([string]$_).Trim()
                 Write-Host ('Frontera: ' + $detalle.Substring(0,[Math]::Min(180,$detalle.Length)))
               }
+              $lineas | ForEach-Object {
+                $linea = ([string]$_).Trim()
+                if ($linea -match '^(?:Error|TypeError|SyntaxError|ReferenceError|RangeError):\s*([^\r\n]+)') {
+                  $mensaje = $Matches[1]
+                  Write-Host ('Error técnico del verificador: ' + $mensaje.Substring(0,[Math]::Min(145,$mensaje.Length)))
+                }
+                if ($linea -match '\b(ENOENT|MODULE_NOT_FOUND|ERR_MODULE_NOT_FOUND|ERR_INVALID_ARG_TYPE)\b') {
+                  Write-Host ('Codigo técnico: ' + $Matches[1])
+                }
+              }
             }
           }
+          exit 0
       - name: Confirmar ausencia de publicación
         shell: pwsh
         run: Write-Host 'QA completada sin crear instalador, modificar Supabase ni publicar release.'
