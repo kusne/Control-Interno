@@ -1,4 +1,5 @@
 name: Verificar certificación QA y Electron sin publicar
+# Validación de fuente privada BMZCN a983b030: QA 151 + Electron GUI simulada.
 on:
   workflow_dispatch:
   push:
