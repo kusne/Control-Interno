@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kusne/BMZCN
-          ref: hardening/certificacion-electron-windows-20261108
+          ref: main
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
