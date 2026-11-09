@@ -1,4 +1,4 @@
-name: Verificar certificación QA sin publicar
+name: Verificar certificación QA y Electron sin publicar
 on:
   workflow_dispatch:
   push:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Comprobar QA aprobada del SHA exacto
+      - name: Comprobar QA y Electron aprobados para el SHA exacto
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
@@ -37,7 +37,7 @@ jobs:
           $sha=(git -C bmzcn rev-parse HEAD).Trim().ToLowerInvariant()
           $env:BMZCN_SOURCE_SHA=$sha
           node scripts/validar-certificacion-qa.cjs
-          if ($LASTEXITCODE -ne 0) { throw 'El publicador no podría validar la QA de main.' }
+          if ($LASTEXITCODE -ne 0) { throw 'El publicador no podría validar QA y Electron de main.' }
       - name: Probar fallo cerrado con SHA no aprobado
         shell: pwsh
         env:
