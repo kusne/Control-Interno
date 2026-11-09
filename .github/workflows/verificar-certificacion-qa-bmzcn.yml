@@ -50,3 +50,4 @@ jobs:
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           if ($resultado -eq 0) { throw 'Error grave: se aprobó un commit sin QA.' }
           Write-Host 'Fallo cerrado verificado: un commit no aprobado no puede publicarse.'
+          exit 0
