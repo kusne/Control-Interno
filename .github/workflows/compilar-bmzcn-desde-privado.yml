@@ -1,15 +1,11 @@
 name: Compilar BMZCN privado con runner publico
-# Ejecucion autorizada: publicar compilacion desde kusne/BMZCN@main (438c005278f351a91053db2b26643ca043380e0f) - 2026-11-08
+# Ejecucion autorizada: publicar compilacion desde kusne/BMZCN@main (4257a653f67e29f97a8dd15a9f6d3a34430b3b35) - 2026-11-08
 # Reparación Excel OOXML 05/11/2026: namespaces, validación ZIP/XML y no exportar sin pedido explícito.
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 # QA 2026-11-05: supervisión final real, contexto extendido, ficción y autocorrección.
 on:
+  # Los releases requieren inicio manual autorizado. Un push no publica.
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/compilar-bmzcn-desde-privado.yml'
 
 concurrency:
   group: bmzcn-instalador-publico-seguro
@@ -179,197 +175,58 @@ jobs:
             throw "No se puede publicar el instalador: la auditoria encontro posibles secretos embebidos."
           }
 
+      - name: Verificar cobertura de calidad y contratos antes del build
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: faltan tests o contratos críticos." }
+          npm run test:blindaje:preflight
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: falló preflight de arquitectura." }
+
+      - name: Preparar dependencias JS sin scripts para QA
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw "Bloqueado: faltan dependencias para tests." }
+
       - name: Ejecutar pruebas sin publicar datos operativos en logs
         shell: pwsh
         working-directory: bmzcn
         run: |
-          $pruebas = @(
-            'tests/seguridad-autenticacion-supabase-v2.test.cjs',
-            'tests/informes-gestion-elevaciones.test.cjs',
-            'tests/informes-word-semanal-estilo-fecha-20261025.test.cjs',
-            'tests/informes-assal-y-numerales-460-20261025.test.cjs',
-            'tests/informes-word-sin-licencias-retenidas.test.cjs',
-            'tests/informes-auditoria-guardias-20261025.test.cjs',
-            'tests/informes-correccion-listado-elevacion-20261025.test.cjs',
-            'tests/informes-elevacion-automatica-20261025.test.cjs',
-            'tests/informes-alcoholemia-licencia-dni-20261025.test.cjs',
-            'tests/informes-dedupe-dominio-20261025.test.cjs',
-            'tests/informes-dedupe-integracion-20261025.test.cjs',
-            'tests/stats-acumulados-operativos-densidad-20261025.test.cjs',
-            'tests/stats-semanal-finalizados-guardia-20261025.test.cjs',
-            'tests/informes-contraste-visual.test.cjs',
-            'tests/informes-layout-compacto.test.cjs',
-            'tests/informes-layout-densidad-xy.test.cjs',
-            'tests/informes-importador-docx-realtime.test.cjs',
-            'tests/informes-importador-auditoria-guardias.test.cjs',
-            'tests/informes-conciliacion-stats.test.cjs',
-            'tests/informes-excel-semanal.test.cjs',
-            'tests/informes-guardia-vigente.test.cjs',
-            'tests/informes-elevaciones-reiteradas.test.cjs',
-            'tests/asistente-integracion-v2.test.cjs',
-            'tests/asistente-orquestador-v3.test.cjs',
-            'tests/asistente-participantes-historicos-20261030.test.cjs',
-            'tests/asistente-consultas-guardias-v1.test.cjs',
-            'tests/asistente-guia-chat-v1.test.cjs',
-            'tests/asistente-numerales-tercios-v1.test.cjs',
-            'tests/asistente-analitica-guardias-20261104.test.cjs',
-            'tests/asistente-conversacion-verificada-v4.test.cjs',
-            'tests/asistente-contexto-estadistico-v1.test.cjs',
-            'tests/asistente-parte-diario-puntual-v1.test.cjs',
-            'tests/asistente-qa-66E797C871.test.cjs',
-            'tests/asistente-groq-qa-v1.test.cjs',
-            'tests/asistente-groq-intenciones-v1.test.cjs',
-            'tests/asistente-groq-motor-v1.test.cjs',
-            'tests/asistente-conversacion-general-v1.test.cjs',
-            'tests/asistente-personal-validado-v1.test.cjs',
-            'tests/agente-bmzcn-v1.test.cjs',
-            'tests/asistente-libro-guardia-v1.test.cjs',
-            'tests/asistente-respuestas-puntuales-v1.test.cjs',
-            'tests/asistente-proximo-operativo-v1.test.cjs',
-            'tests/asistente-rag-hibrido-v1.test.cjs',
-            'tests/asistente-consultas-institucionales-v1.test.cjs',
-            'tests/asistente-elevaciones-descarga.test.cjs',
-            'tests/asistente-numerales-v3.test.cjs',
-            'tests/asistente-regresiones-20261012.test.cjs',
-            'tests/asistente-operativos-realizados.test.cjs',
-            'tests/stats-historial-reportes.test.cjs',
-            'tests/auditoria-estadisticas-guardadas.test.cjs',
-            'tests/stats-marca-copiar-temporal-20261027.test.cjs',
-            'tests/stats-copiar-alcoholemias-sin-numeral-20261028.test.cjs',
-            'tests/stats-entrada-sin-encabezado-manual-20261028.test.cjs',
-            'tests/stats-revision-documental-ingreso-20261028.test.cjs',
-            'tests/stats-conciliacion-partes-temporal-20261027.test.cjs',
-            'tests/stats-cuatro-modos-acumulador-canonico-20261101.test.cjs',
-            'tests/stats-frontend-numerales-sin-cero-20261101.test.cjs',
-            'tests/stats-posproceso-carga-numerales-20261101.test.cjs',
-            'tests/stats-salida-proteccion.test.cjs',
-            'tests/stats-relevo-acople-local.test.cjs',
-            'tests/stats-control-superior-evento.test.cjs',
-            'tests/stats-procedimiento-evento-20261017.test.cjs',
-            'tests/stats-procedimiento-autovinculo-20261017.test.cjs',
-            'tests/pestanas-carga-sin-parpadeo.test.cjs',
-            'tests/bmzcn-arranque-sin-excel.test.cjs',
-            'tests/bmzcn-ia-coordinador-v1.test.cjs',
-            'tests/bmzcn-ia-acceso-obligatorio-v1.test.cjs',
-            'tests/bmzcn-ia-flujo-resiliente-v2.test.cjs',
-            'tests/bmzcn-ia-lecturas-con-supervisor-degradado.test.cjs',
-            'tests/bmzcn-qa-ritmo-multiagente.test.cjs',
-            'tests/bmzcn-ia-tres-agentes-reales.test.cjs',
-            'tests/bmzcn-ia-bitacora-v1.test.cjs',
-            'tests/bmzcn-chat-envio-no-bloqueo.test.cjs',
-            'tests/bmzcn-ia-comparativas-v1.test.cjs',
-            'tests/bmzcn-excel-comparativos.test.cjs',
-            'tests/actualizaciones-realtime.test.cjs',
-            'tests/asistente-personal-colectivo.test.cjs',
-            'tests/filtro-editor-horarios-word.test.cjs',
-            'tests/filtro-alta-manual-vista-20261029.test.cjs',
-            'tests/filtro-fechas-picker-rango.test.cjs',
-            'tests/filtro-guardia-epe-aprad-20261017.test.cjs',
-            'tests/filtro-guardia-exclusiva-20261029.test.cjs',
-            'tests/filtro-auditoria-manual-sin-efecto-20261030.test.cjs',
-            'tests/filtro-publicacion-colision-vencida-20261106.test.cjs',
-            'tests/filtro-vista-previa-fila-compacta-20261106.test.cjs',
-            'tests/filtro-recuperacion.test.cjs',
-            'tests/filtro-supervisor-arranque-lento.test.mjs',
-            'tests/stats-presencias-aprad-puente-word-cero-20261017.test.cjs',
-            'tests/stats-aprad-y-sin-efecto-guardia-20261017.test.cjs',
-            'tests/stats-runtime-presencias-cargadas-20261017.test.cjs',
-            'tests/stats-clasificacion-aprad-nocturnidad.test.cjs',
-            'tests/iconos-clasificacion-operativos.test.cjs',
-            'tests/stats-ingreso-semanal-pegado-guardia-pasada.test.cjs',
-            'tests/stats-retorno-pestana-sin-parpadeo.test.cjs',
-            'tests/chat-vista-mensajeria.test.cjs',
-            'tests/chat-qa-puente-20261031.test.cjs',
-            'tests/chat-natural-saludos.test.cjs'
-          )
+          # Un único catálogo autoritativo descubre nuevas regresiones de forma
+          # automática. Sin manifiesto/contratos/suficientes tests: no publicar.
+          $pruebas = @(node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs --listar)
+          if ($LASTEXITCODE -ne 0 -or $pruebas.Count -lt 100) {
+            throw "Publicación bloqueada: catálogo de regresiones incompleto."
+          }
           $log = Join-Path $env:RUNNER_TEMP 'bmzcn-pruebas-privadas.log'
           $fallidas = @()
           foreach ($prueba in $pruebas) {
+            if ($prueba -notmatch '^tests/[A-Za-z0-9_.-]+\\.test\\.(?:cjs|mjs)$') {
+              throw "Publicación bloqueada: ruta de prueba no autorizada."
+            }
             node --test $prueba *> $log
-            $resultado = $LASTEXITCODE
-            if ($resultado -ne 0) {
+            if ($LASTEXITCODE -ne 0) {
               $fallidas += $prueba
-              Write-Host "Prueba no superada: $prueba"
-              if ($prueba -eq 'tests/filtro-publicacion-colision-vencida-20261106.test.cjs') {
-                Get-Content $log | Where-Object {
-                  $_ -match '^not ok [0-9]+ - ' -or
-                  $_ -match '^  (?:error|name|code|operator):' -or
-                  $_ -match 'filtro-publicacion-colision-vencida-20261106.test.cjs:[0-9]+:'
-                } | Select-Object -First 20 | ForEach-Object {
-                  Write-Host ('Filtro test sintético: '+$_.Trim().Substring(0,[Math]::Min(160,$_.Trim().Length)))
+              Write-Host ('QA fallida: ' + $prueba)
+              # No imprimir valores reales, fixtures, stacks ni código privado.
+              Get-Content $log | ForEach-Object {
+                if ($_ -match '^not ok (\\d+) - ') {
+                  Write-Host ('Caso TAP fallido: ' + $Matches[1])
+                }
+                if ($_ -match '^  (?:code|name|operator):\\s*[''"]?([A-Za-z0-9_]+)') {
+                  Write-Host ('Categoría técnica: ' + $Matches[1])
                 }
               }
-              # Solo diagnóstico de casos sintéticos: no imprimir bases ni datos reales.
-              if ($prueba -eq 'tests/bmzcn-ia-lecturas-con-supervisor-degradado.test.cjs') {
-                Get-Content $log | Where-Object {
-                  $_ -match '^not ok [0-9]+ - ' -or
-                  $_ -match '^  (?:error|name|code|operator):' -or
-                  $_ -match 'lecturas-con-supervisor-degradado.test.cjs:[0-9]+:'
-                } | Select-Object -First 15 | ForEach-Object {
-                  Write-Host ('QA sintetico: '+$_.Trim().Substring(0,[Math]::Min(160,$_.Trim().Length)))
-                }
-              }
-              if ($prueba -eq 'tests/asistente-conversacion-verificada-v4.test.cjs') {
-                Get-Content $log | Where-Object { $_ -match 'QA_FIX_DIAG=([a-z_]+)' } | ForEach-Object {
-                  if ($_ -match 'QA_FIX_DIAG=([a-z_]+)') { Write-Host ('Diagnostico de ruta sintetica: ' + $Matches[1]) }
-                }
-                Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
-                  if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Regresion V4 fallida (indice): ' + $Matches[1]) }
-                }
-                Get-Content $log | Where-Object { $_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)' } | ForEach-Object {
-                  if ($_ -match 'asistente-conversacion-verificada-v4\.test\.cjs:([0-9]+):([0-9]+)') { Write-Host ('Regresion V4 fallida (linea): ' + $Matches[1]) }
-                }
-              }
-              if ($prueba -eq 'tests/stats-frontend-numerales-sin-cero-20261101.test.cjs') {
-                Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
-                  if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Estadisticas frontend fallida (indice): ' + $Matches[1]) }
-                }
-                Get-Content $log | Where-Object { $_ -match 'stats-frontend-numerales-sin-cero-20261101\.test\.cjs:([0-9]+):' } | Select-Object -First 8 | ForEach-Object {
-                  if ($_ -match 'stats-frontend-numerales-sin-cero-20261101\.test\.cjs:([0-9]+):') { Write-Host ('Estadisticas frontend fallida (linea): ' + $Matches[1]) }
-                }
-              }
-              if ($prueba -eq 'tests/asistente-integracion-v2.test.cjs') {
-                Get-Content $log | Where-Object { $_ -match '^not ok ([0-9]+) - ' } | ForEach-Object {
-                  if ($_ -match '^not ok ([0-9]+) - ') { Write-Host ('Regresion V2 fallida (indice): ' + $Matches[1]) }
-                }
-                Get-Content $log | Where-Object { $_ -match 'asistente-integracion-v2\.test\.cjs:([0-9]+):([0-9]+)' } | ForEach-Object {
-                  if ($_ -match 'asistente-integracion-v2\.test\.cjs:([0-9]+):([0-9]+)') { Write-Host ('Regresion V2 fallida (linea): ' + $Matches[1]) }
-                }
-              }
-              if ($prueba -eq 'tests/stats-conciliacion-partes-temporal-20261027.test.cjs') {
-                Get-Content $log | Where-Object { $_ -match '^\s+(?:name|code|actual|expected|operator):' } | ForEach-Object {
-                  Write-Host ('Prueba sintetica (solo estado): ' + $_.Trim())
-                }
-              }
-              if ($prueba -in @('tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-consultas-institucionales-v1.test.cjs','tests/asistente-elevaciones-descarga.test.cjs','tests/asistente-orquestador-v3.test.cjs','tests/asistente-proximo-operativo-v1.test.cjs','tests/asistente-libro-guardia-v1.test.cjs','tests/asistente-rag-hibrido-v1.test.cjs')) {
-              Get-Content $log | Where-Object { $_ -match '^\s+(?:error:|code:|name:|actual:|expected:|operator:|stack:|at )' } | Select-Object -First 32 | ForEach-Object {
-                Write-Host ('Diagnostico sintetico: ' + $_.Trim())
-              }
-            }
-            if ($prueba -in @('tests/bmzcn-ia-coordinador-v1.test.cjs',
-              'tests/bmzcn-ia-bitacora-v1.test.cjs','tests/bmzcn-ia-comparativas-v1.test.cjs',
-              'tests/bmzcn-excel-comparativos.test.cjs')) {
-              Get-Content $log | Select-String '^not ok [0-9]+ - |^  (?:error|code|name|operator):' | Select-Object -First 12 | ForEach-Object {
-                Write-Host ('Prueba sintética multiagente: '+$_.Line)
-              }
-            }
-            if ($prueba -in @('tests/auditoria-estadisticas-guardadas.test.cjs','tests/stats-marca-copiar-temporal-20261027.test.cjs','tests/stats-conciliacion-partes-temporal-20261027.test.cjs','tests/filtro-guardia-exclusiva-20261029.test.cjs','tests/filtro-auditoria-manual-sin-efecto-20261030.test.cjs','tests/asistente-respuestas-puntuales-v1.test.cjs','tests/asistente-numerales-v3.test.cjs','tests/asistente-rag-hibrido-v1.test.cjs')) {
-                Get-Content $log | Select-String '^not ok [0-9]+ - ' | ForEach-Object {
-                  Write-Host ("Prueba fallida (solo titulo): " + $_.Line)
-                }
-              }
-            }
-            # Exponer solo títulos sintéticos y códigos: el código privado y los datos no se imprimen.
-            Get-Content $log | Where-Object { $_ -match '^not ok [0-9]+ - ' -or $_ -match '^  (?:code|name|operator):' } | Select-Object -First 14 | ForEach-Object {
-              $linea = $_.Trim()
-              Write-Host ('Diagnostico QA: ' + $linea.Substring(0,[Math]::Min(155,$linea.Length)))
             }
             Remove-Item $log -Force -ErrorAction SilentlyContinue
           }
           if ($fallidas.Count -gt 0) {
             throw "No se publica: $($fallidas.Count) archivos de prueba fallaron. Los resultados y los datos privados no se imprimen en logs publicos."
           }
-          Write-Host "Pruebas de regresion superadas."
+          Write-Host ("Puerta de calidad aprobada: " + $pruebas.Count + " archivos de prueba.")
 
       - name: Instalar dependencias del instalador
         shell: pwsh
