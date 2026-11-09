@@ -40,7 +40,7 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         run: |
-          npm ci --ignore-scripts --no-audit --no-fund --silent
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
           if ($LASTEXITCODE -ne 0) { throw 'Dependencias de QA no disponibles.' }
       - name: Comprobar catálogo unificado, contratos y sintaxis
         shell: pwsh
@@ -102,7 +102,8 @@ jobs:
               Write-Host ('ARQUITECTURA NO VÁLIDA: ' + $archivo)
               $lineas | Where-Object { $_ -match '^\s*-\s+\S' } | Select-Object -First 40 | ForEach-Object {
                 # Los verificadores solo generan ruta de archivo y nombre de regla.
-                Write-Host ('Frontera: ' + $_.Trim().Substring(0,[Math]::Min(180,$_.Trim().Length)))
+                $detalle = ([string]$_).Trim()
+                Write-Host ('Frontera: ' + $detalle.Substring(0,[Math]::Min(180,$detalle.Length)))
               }
             }
           }
