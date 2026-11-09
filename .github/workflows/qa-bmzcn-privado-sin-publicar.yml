@@ -1,0 +1,77 @@
+name: QA integral BMZCN sin publicar instalador
+# Solo lectura. Valida fuentes privadas sin construir paquetes ni crear releases.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-bmzcn-privado-sin-publicar.yml'
+concurrency:
+  group: qa-bmzcn-privado-sin-publicacion
+  cancel-in-progress: true
+permissions:
+  contents: read
+
+jobs:
+  calidad:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Verificar acceso de solo lectura al repositorio privado
+        shell: pwsh
+        env:
+          SOURCE_TOKEN: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+        run: |
+          if (-not $env:SOURCE_TOKEN) { throw 'No se puede ejecutar QA sin la credencial de lectura.' }
+      - name: Descargar rama de QA sin persistir credenciales
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          # Primera ejecución: verificar el PR aislado antes de fusionarlo.
+          ref: hardening/ci-calidad-unificada-20261108
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar catálogo unificado, contratos y sintaxis
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference='Stop'
+          node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'La puerta de calidad detectó un catálogo incompleto.' }
+          npm run test:blindaje:preflight
+          if ($LASTEXITCODE -ne 0) { throw 'Preflight de arquitectura fallido; no se autoriza publicar.' }
+      - name: Ejecutar TODAS las regresiones del catálogo, sin imprimir datos privados
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference='Stop'
+          $pruebas = @(node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs --listar)
+          if ($LASTEXITCODE -ne 0 -or $pruebas.Count -lt 100) {
+            throw 'Catálogo de pruebas incompleto; QA cerrada.'
+          }
+          $log = Join-Path $env:RUNNER_TEMP 'bmzcn-qa-private.log'
+          $fallidas = @()
+          foreach ($prueba in $pruebas) {
+            if ($prueba -notmatch '^tests/[A-Za-z0-9_.-]+\.test\.(?:cjs|mjs)$') {
+              throw 'Ruta de pruebas no autorizada.'
+            }
+            node --test $prueba *> $log
+            if ($LASTEXITCODE -ne 0) {
+              $fallidas += $prueba
+              # Solo ruta de test, nunca contenidos de fuentes ni valores de clientes.
+              Write-Host ('REGRESIÓN FALLIDA: ' + $prueba)
+            }
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
+          }
+          if ($fallidas.Count -gt 0) {
+            throw ('QA BLOQUEADA: ' + $fallidas.Count + ' archivos de prueba fallaron.')
+          }
+          Write-Host ('QA VERDE: ' + $pruebas.Count + ' archivos de prueba aprobados.')
+      - name: Confirmar ausencia de publicación
+        shell: pwsh
+        run: Write-Host 'QA completada sin crear instalador, modificar Supabase ni publicar release.'
