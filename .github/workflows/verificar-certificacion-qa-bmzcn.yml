@@ -1,0 +1,52 @@
+name: Verificar certificación QA sin publicar
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verificar-certificacion-qa-bmzcn.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  puerta:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Obtener verificador público
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Leer SHA privado de main, sin persistir credenciales
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          ref: main
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar QA aprobada del SHA exacto
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $sha=(git -C bmzcn rev-parse HEAD).Trim().ToLowerInvariant()
+          $env:BMZCN_SOURCE_SHA=$sha
+          node scripts/validar-certificacion-qa.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'El publicador no podría validar la QA de main.' }
+      - name: Probar fallo cerrado con SHA no aprobado
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $env:BMZCN_SOURCE_SHA='0000000000000000000000000000000000000000'
+          $log=Join-Path $env:RUNNER_TEMP 'certificacion-rechazo.log'
+          node scripts/validar-certificacion-qa.cjs *> $log
+          $resultado=$LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -eq 0) { throw 'Error grave: se aprobó un commit sin QA.' }
+          Write-Host 'Fallo cerrado verificado: un commit no aprobado no puede publicarse.'
