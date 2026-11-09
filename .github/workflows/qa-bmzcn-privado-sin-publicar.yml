@@ -65,6 +65,16 @@ jobs:
               $fallidas += $prueba
               # Solo ruta de test, nunca contenidos de fuentes ni valores de clientes.
               Write-Host ('REGRESIÓN FALLIDA: ' + $prueba)
+              # Solo índices TAP y categorías de error, nunca mensajes, datos,
+              # valores actual/expected, fuentes privadas ni stack traces.
+              Get-Content $log | ForEach-Object {
+                if ($_ -match '^not ok (\d+) - ') {
+                  Write-Host ('Caso de prueba fallido: ' + $Matches[1])
+                }
+                if ($_ -match '^  (?:code|name|operator):\s*[''"]?([A-Za-z0-9_]+)') {
+                  Write-Host ('Categoria tecnica: ' + $Matches[1])
+                }
+              }
             }
             Remove-Item $log -Force -ErrorAction SilentlyContinue
           }
