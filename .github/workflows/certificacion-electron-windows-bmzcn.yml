@@ -1,0 +1,102 @@
+name: Certificar Electron Windows sin publicar
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/certificacion-electron-windows-bmzcn.yml'
+permissions:
+  contents: read
+concurrency:
+  group: certificacion-electron-windows
+  cancel-in-progress: true
+jobs:
+  empaquetado:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Descargar rama de certificación privada (solo lectura)
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          ref: hardening/certificacion-electron-windows-20261108
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias aisladas del programa y Filtro
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $ErrorActionPreference='Stop'
+          npm install --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Falló instalación de dependencias Electron.' }
+          npm ci --prefix app/filtro-ordenes/servicio-local --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Falló instalación local de Filtro-Órdenes.' }
+      - name: Validar seguridad y contratos antes del empaquetado
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Catálogo no válido.' }
+          npm run test:blindaje:preflight
+          if ($LASTEXITCODE -ne 0) { throw 'Arquitectura/IPC inválidos.' }
+          node --test tests/electron-ventana-windows-smoke-contrato.test.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato de smoke inválido.' }
+      - name: Construir recursos internos de Estadísticas
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'stats-build.log'
+          npm run predist:win *> $log
+          $resultado=$LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw 'Fallo preparando recursos de Estadísticas.' }
+      - name: Empaquetar Windows sin instalador ni publicación
+        shell: pwsh
+        working-directory: bmzcn
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'bmzcn-dir-build.log'
+          npx --no-install electron-builder --win --dir --publish never *> $log
+          $resultado=$LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw 'No se pudo empaquetar directorio win-unpacked.' }
+          if (-not (Test-Path 'dist/win-unpacked')) { throw 'No se generó carpeta Windows sin instalar.' }
+      - name: Comprobar Filtro local empaquetado en ejecutable real
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'filtro-smoke.log'
+          node tests/filtro-instalador-windows-smoke.cjs *> $log
+          $resultado=$LASTEXITCODE
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw 'El backend y frontend de Filtro-Órdenes no superan el arranque empaquetado.' }
+          Write-Host 'Filtro-Órdenes: servidor y frontend locales funcionales en Windows.'
+      - name: Comprobar ventana Electron real, login e IPC
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'electron-ventana-smoke.log'
+          node tests/electron-ventana-windows-smoke.cjs *> $log
+          $resultado=$LASTEXITCODE
+          if ($resultado -ne 0) {
+            Get-Content $log | Where-Object { $_ -match '^CERTIFICACIÓN WINDOWS' } |
+              Select-Object -First 3 | ForEach-Object { Write-Host ([string]$_).Substring(0,[Math]::Min(250,([string]$_).Length)) }
+          }
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          if ($resultado -ne 0) { throw 'La ventana Electron no superó su certificación.' }
+          Write-Host 'Ventana Electron empaquetada: 7 módulos, login, preload e IPC correctos.'
+      - name: Garantizar que no se publicó ni se creó instalador NSIS
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          if (@(Get-ChildItem -Path dist -File -Filter '*.exe').Count -gt 0) {
+            throw 'Se detectó un instalador cuando solo se autorizó el ejecutable desempaquetado.'
+          }
+          if (Test-Path 'dist/latest.yml') { throw 'No debe generarse un feed de actualización.' }
+          Write-Host 'Certificación sin release, sin instalador y sin credenciales de producción.'
