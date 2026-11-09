@@ -27,8 +27,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kusne/BMZCN
-          # Primera ejecución: verificar el PR aislado antes de fusionarlo.
-          ref: hardening/ci-calidad-unificada-20261108
+          # En estado estable, verificar exactamente el main privado.
+          ref: main
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
