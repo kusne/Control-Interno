@@ -36,6 +36,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Instalar dependencias JavaScript sin ejecutar instaladores
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Dependencias de QA no disponibles.' }
       - name: Comprobar catálogo unificado, contratos y sintaxis
         shell: pwsh
         working-directory: bmzcn
@@ -82,6 +88,24 @@ jobs:
             throw ('QA BLOQUEADA: ' + $fallidas.Count + ' archivos de prueba fallaron.')
           }
           Write-Host ('QA VERDE: ' + $pruebas.Count + ' archivos de prueba aprobados.')
+      - name: Diagnosticar cruces arquitectónicos sin filtrar código ni datos
+        if: always()
+        shell: pwsh
+        working-directory: bmzcn
+        run: |
+          foreach ($archivo in @('app/stats/Herramientas/verificar-arquitectura.js',
+                                  'app/filtro-ordenes/backend/servicios/verificar-arquitectura.js')) {
+            $lineas = & node $archivo 2>&1
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host ('ARQUITECTURA OK: ' + $archivo)
+            } else {
+              Write-Host ('ARQUITECTURA NO VÁLIDA: ' + $archivo)
+              $lineas | Where-Object { $_ -match '^\s*-\s+\S' } | Select-Object -First 40 | ForEach-Object {
+                # Los verificadores solo generan ruta de archivo y nombre de regla.
+                Write-Host ('Frontera: ' + $_.Trim().Substring(0,[Math]::Min(180,$_.Trim().Length)))
+              }
+            }
+          }
       - name: Confirmar ausencia de publicación
         shell: pwsh
         run: Write-Host 'QA completada sin crear instalador, modificar Supabase ni publicar release.'
