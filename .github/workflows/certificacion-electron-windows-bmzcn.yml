@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kusne/BMZCN
-          ref: main
+          ref: hardening/certificacion-sesion-sintetica-20261108
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
@@ -45,6 +45,8 @@ jobs:
           npm run test:blindaje:preflight
           if ($LASTEXITCODE -ne 0) { throw 'Arquitectura/IPC inválidos.' }
           node --test tests/electron-ventana-windows-smoke-contrato.test.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato de smoke inválido.' }
+          node --test tests/electron-sesion-autenticacion-simulada-20261108.test.cjs
           if ($LASTEXITCODE -ne 0) { throw 'Contrato de smoke inválido.' }
       - name: Construir recursos internos de Estadísticas
         shell: pwsh
@@ -122,7 +124,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: bmzcn-electron-main-${{ steps.evidencia.outputs.source_sha }}
+          name: bmzcn-electron-rama-${{ steps.evidencia.outputs.source_sha }}
           path: ${{ runner.temp }}/bmzcn-electron-evidencia.json
           if-no-files-found: error
           retention-days: 14
