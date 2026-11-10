@@ -1,0 +1,71 @@
+name: QA puntual Filtro BMZCN privado en runner publico
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-hotfix-filtro-20261110.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prueba:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Descargar SHA privado a certificar, sin publicar fuente
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          ref: e22c915955ddcf084c0ef2e52f8e54f390e16ef0
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar SHA exacto
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          $sha=(git rev-parse HEAD).Trim().ToLowerInvariant()
+          if ($sha -ne 'e22c915955ddcf084c0ef2e52f8e54f390e16ef0') { throw 'SHA privado incorrecto.' }
+          Write-Host 'Verificado commit exacto del PR #63.'
+      - name: Puerta de arquitectura y regresiones
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Error preparando dependencias QA.' }
+          node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Puerta de calidad fallida.' }
+          npm run test:blindaje:preflight
+          if ($LASTEXITCODE -ne 0) { throw 'Preflight fallido.' }
+      - name: Ejecutar tests críticos y reportar rutas, no valores
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          $pruebas=@(
+            'tests/filtro-manual-orden-existente-dedupe-20261110.test.cjs',
+            'tests/filtro-guardia-fechas-apiladas-20261110.test.cjs',
+            'tests/filtro-alta-manual-vista-20261029.test.cjs',
+            'tests/filtro-vista-preview-manual-real-20261108.test.cjs',
+            'tests/filtro-guardia-exclusiva-20261029.test.cjs',
+            'tests/filtro-guardia-epe-aprad-20261017.test.cjs'
+          )
+          $errores=@()
+          $log=Join-Path $env:RUNNER_TEMP 'qa-filtro-privado.log'
+          foreach ($prueba in $pruebas) {
+            node --test $prueba *> $log
+            if ($LASTEXITCODE -ne 0) {
+              $errores += $prueba
+              Write-Host ('QA FALLIDA: ' + $prueba)
+              Get-Content $log | ForEach-Object {
+                if ($_ -match '^not ok (\d+) - ') { Write-Host ('Caso TAP fallido: ' + $Matches[1]) }
+                if ($_ -match '^  (?:code|name|operator):\s*[''"]?([A-Za-z0-9_]+)') { Write-Host ('Categoria: ' + $Matches[1]) }
+              }
+            } else { Write-Host ('QA OK: ' + $prueba) }
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
+          }
+          if ($errores.Count) { throw ('Hay ' + $errores.Count + ' tests fallidos. No publicar.') }
+          Write-Host 'QA puntual completa. No se creó instalador ni se modificó producción.'
