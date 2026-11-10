@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kusne/BMZCN
-          ref: 854dfe0eb400f5e0e497ef4f82fc3227ddd5ee08
+          ref: 8b708bedfcd396e48bf44099627ff3f56fc03af3
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
@@ -24,12 +24,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Instalar dependencias requeridas por pruebas Electron Word
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
+          if($LASTEXITCODE -ne 0){throw 'No fue posible instalar dependencias para QA'}
       - name: Verificar commit y contrato sintáctico
         working-directory: bmzcn
         shell: pwsh
         run: |
           $sha=(git rev-parse HEAD).Trim().ToLowerInvariant()
-          if($sha -ne '854dfe0eb400f5e0e497ef4f82fc3227ddd5ee08') { throw 'Fuente no es el SHA verificado' }
+          if($sha -ne '8b708bedfcd396e48bf44099627ff3f56fc03af3') { throw 'Fuente no es el SHA verificado' }
           node --check app/bmzcn-ia-ambito-v1.js
           node --check app/bmzcn-ia-acceso-obligatorio-v1.js
           node --check app/asistente-groq-motor-v1.js
