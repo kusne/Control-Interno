@@ -4,7 +4,11 @@ name: Compilar BMZCN privado con runner publico
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 # QA 2026-11-05: supervisión final real, contexto extendido, ficción y autocorrección.
 on:
-  # Los releases requieren inicio manual autorizado. Un push no publica.
+  # Publicación puntual de BMZCN main a0a9d200 tras QA y Electron certificados.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/compilar-bmzcn-desde-privado.yml'
   workflow_dispatch:
 
 concurrency:
