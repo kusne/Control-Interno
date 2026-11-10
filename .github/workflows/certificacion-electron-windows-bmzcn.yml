@@ -1,3 +1,4 @@
+# Revalidación por push del SHA privado certificado: 2e2ee84ee19667429d85eba28c8a7bbab31c4959 (10/11/2026)
 name: Certificar Electron Windows sin publicar
 on:
   workflow_dispatch:
