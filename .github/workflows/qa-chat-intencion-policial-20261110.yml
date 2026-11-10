@@ -81,13 +81,13 @@ jobs:
           $fallidas=@()
           $log=Join-Path $env:RUNNER_TEMP 'qa-bmzcn-integral.log'
           foreach($prueba in $pruebas){
-            if($prueba -notmatch '^tests/[A-Za-z0-9_.-]+\\.test\\.(?:cjs|mjs)$'){throw 'Ruta de prueba invalida'}
+            if($prueba -notmatch '^tests/[A-Za-z0-9_.-]+\.test\.(?:cjs|mjs)$'){throw 'Ruta de prueba invalida'}
             node --test $prueba *> $log
             if($LASTEXITCODE -ne 0){
               $fallidas += $prueba
               Write-Host ('REGRESION FALLIDA: '+$prueba)
               Get-Content $log | ForEach-Object {
-                if($_ -match '^not ok (\\d+) - '){Write-Host ('TAP: '+$Matches[1])}
+                if($_ -match '^not ok (\d+) - '){Write-Host ('TAP: '+$Matches[1])}
               }
             }
             Remove-Item $log -Force -ErrorAction SilentlyContinue
