@@ -1,0 +1,75 @@
+name: QA formato institucional direccion BMZCN - sin publicar
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-alerta-direccion-formato-20261110.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Extraer fuente privada sin publicarla
+        uses: actions/checkout@v4
+        with:
+          repository: kusne/BMZCN
+          ref: 1b820ef6315d788a69d9b912ce904318466b259d
+          token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: bmzcn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar SHA y sintaxis
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          $actual=(git rev-parse HEAD).Trim().ToLowerInvariant()
+          if($actual -ne '1b820ef6315d788a69d9b912ce904318466b259d') { throw 'El SHA de la fuente privada es diferente' }
+          node --check app/asistente-alertas-direccion-v1.js
+          node --check tests/alerta-direccion-formato-institucional-20261110.test.cjs
+          if($LASTEXITCODE -ne 0) { throw 'Sintaxis inválida' }
+      - name: Instalar dependencias de QA sin ejecutar scripts
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          npm install --ignore-scripts --no-package-lock --no-audit --no-fund --silent
+          if($LASTEXITCODE -ne 0) { throw 'Dependencias QA no disponibles' }
+      - name: Regresiones de formato del informe y aislamiento del Chat IA
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          $pruebas=@(
+            'tests/alerta-direccion-formato-institucional-20261110.test.cjs',
+            'tests/asistente-acciones-personal-alertas-v1.test.cjs',
+            'tests/chat-vista-mensajeria.test.cjs',
+            'tests/bmzcn-ia-acceso-obligatorio-v1.test.cjs',
+            'tests/bmzcn-ia-flujo-resiliente-v2.test.cjs',
+            'tests/asistente-parte-diario-puntual-v1.test.cjs'
+          )
+          $fallos=@()
+          $log=Join-Path $env:RUNNER_TEMP 'qa-direccion.log'
+          foreach($prueba in $pruebas){
+            node --test $prueba *> $log
+            if($LASTEXITCODE -ne 0){
+              $fallos += $prueba
+              Write-Host ('FALLO: '+$prueba)
+              Get-Content $log | ForEach-Object {
+                if($_ -match '^not ok (\d+) - ') { Write-Host ('Caso fallido: '+$Matches[1]) }
+                if($_ -match '^\s+(?:code|name|operator):\s*[''"]?([A-Za-z0-9_]+)'){Write-Host ('Categoria: '+$Matches[1])}
+              }
+            } else { Write-Host ('APROBADO: '+$prueba) }
+            Remove-Item $log -Force -ErrorAction SilentlyContinue
+          }
+          if($fallos.Count){throw ('Faltan '+$fallos.Count+' pruebas')}
+      - name: Contratos de blindaje sin mutar registros
+        working-directory: bmzcn
+        shell: pwsh
+        run: |
+          npm run test:blindaje:preflight
+          if($LASTEXITCODE -ne 0){throw 'Blindaje no aprobado'}
+          Write-Host 'QA aislada aprobada sin instalador ni cambios en producción.'
