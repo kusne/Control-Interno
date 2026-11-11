@@ -1,3 +1,4 @@
+# QA RETIRO sin bloque: actualizar regresión legacy y validar ambas representaciones.
 # QA FINAL PR70 SHA 16a4ce0b29bc45ff353d3221c3d70633901c2981: compatibilidad eventos V2 sin updatedAt legacy.
 # Certificación PR #70 SHA d8870b9525c962f4af67b1d1c93f94555f5b4ebb: preservar informe principal de procedimientos.
 # QA editor integral: INICIO, CONTROL SUPERIOR, ACOPLE vinculado, PROCEDIMIENTO e historial.
