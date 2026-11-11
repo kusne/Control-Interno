@@ -4,12 +4,8 @@ name: Compilar BMZCN privado con runner publico
 # Origen exclusivamente privado: kusne/BMZCN@main; solo el instalador se publica aqui.
 # QA 2026-11-05: supervisión final real, contexto extendido, ficción y autocorrección.
 on:
-  # Publicación puntual autorizada de BMZCN PR #69 (sin FINALIZADO).
+  # Los releases requieren inicio manual autorizado. Un push no publica.
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/compilar-bmzcn-desde-privado.yml'
 
 concurrency:
   group: bmzcn-instalador-publico-seguro
@@ -22,7 +18,7 @@ permissions:
 
 jobs:
   instalador:
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[eventos-69-publicar]'))
+    if: github.ref == 'refs/heads/main'
     runs-on: windows-latest
     timeout-minutes: 90
     steps:
