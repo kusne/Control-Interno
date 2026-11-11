@@ -1,3 +1,4 @@
+# QA editor integral: INICIO, CONTROL SUPERIOR, ACOPLE vinculado, PROCEDIMIENTO e historial.
 # QA PR #69: incluir anterior en alcance correcto de evento local y comprobar protección sin identidad.
 # Tercera corrida: prueba de evento histórico sin adaptador legacy ajeno a movimientos.
 # Segunda corrida QA de eventos: controlador de guardia compartido, identidad de Enter y regresiones corregidas.
