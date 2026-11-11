@@ -1,3 +1,4 @@
+# QA hora real de movimiento: completar parser de RELEVO en harness.
 # QA RETIRO 00:34: corregir marca del evento y personal vigente FINALIZADO.
 # QA final PR #73: impedir segunda finalización tras cron a las 06:00 y probar rechazo.
 # QA PR73: eliminar referencia a API localStorage prohibida por verificador de fronteras.
