@@ -1,3 +1,4 @@
+# QA PR #69: incluir anterior en alcance correcto de evento local y comprobar protección sin identidad.
 # Tercera corrida: prueba de evento histórico sin adaptador legacy ajeno a movimientos.
 # Segunda corrida QA de eventos: controlador de guardia compartido, identidad de Enter y regresiones corregidas.
 # Certificación de BMZCN@main 9935803ebcfed87764cb4f656779c963414f0d76 (PR #66, calendario y actas), 2026-11-10.
