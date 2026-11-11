@@ -39,7 +39,7 @@ jobs:
         with:
           repository: kusne/BMZCN
           # Con push se verifica main; manualmente admite rama o SHA privada.
-          ref: ${{ inputs.source_ref || 'main' }}
+          ref: ${{ inputs.source_ref || 'hardening/relevo-ultimo-evento-20261110' }}
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
@@ -49,7 +49,7 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         env:
-          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
+          SOURCE_REF: ${{ inputs.source_ref || 'hardening/relevo-ultimo-evento-20261110' }}
         run: |
           $sha=(git rev-parse HEAD).Trim().ToLowerInvariant()
           if ($sha -notmatch '^[0-9a-f]{40}$') { throw 'SHA privado no verificable.' }
@@ -150,7 +150,7 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         env:
-          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
+          SOURCE_REF: ${{ inputs.source_ref || 'hardening/relevo-ultimo-evento-20261110' }}
           SOURCE_SHA: ${{ steps.origen.outputs.source_sha }}
         run: |
           $count=@(node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs --listar).Count
