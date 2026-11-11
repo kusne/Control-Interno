@@ -1,3 +1,4 @@
+# QA RETIRO 00:34: corregir marca del evento y personal vigente FINALIZADO.
 # QA final PR #73: impedir segunda finalización tras cron a las 06:00 y probar rechazo.
 # QA PR73: eliminar referencia a API localStorage prohibida por verificador de fronteras.
 # QA RETIRO sin bloque: actualizar regresión legacy y validar ambas representaciones.
@@ -48,7 +49,7 @@ jobs:
         with:
           repository: kusne/BMZCN
           # Con push se verifica main; manualmente admite rama o SHA privada.
-          ref: ${{ inputs.source_ref || 'main' }}
+          ref: ${{ inputs.source_ref || 'fix/retiro-hora-real-y-finalizado-dotacion-vigente-20261111' }}
           token: ${{ secrets.BMZCN_SOURCE_READ_TOKEN }}
           persist-credentials: false
           fetch-depth: 1
@@ -58,7 +59,7 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         env:
-          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
+          SOURCE_REF: ${{ inputs.source_ref || 'fix/retiro-hora-real-y-finalizado-dotacion-vigente-20261111' }}
         run: |
           $sha=(git rev-parse HEAD).Trim().ToLowerInvariant()
           if ($sha -notmatch '^[0-9a-f]{40}$') { throw 'SHA privado no verificable.' }
@@ -159,7 +160,7 @@ jobs:
         shell: pwsh
         working-directory: bmzcn
         env:
-          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
+          SOURCE_REF: ${{ inputs.source_ref || 'fix/retiro-hora-real-y-finalizado-dotacion-vigente-20261111' }}
           SOURCE_SHA: ${{ steps.origen.outputs.source_sha }}
         run: |
           $count=@(node scripts/arquitectura/puerta-calidad-publicacion-bmzcn.cjs --listar).Count
